@@ -1,0 +1,27 @@
+<div class="card">
+  <form [formGroup]="formGroup">
+    <p-editor formControlName="text" [style]="{ height: '320px' }" />
+  </form>
+</div>
+
+<div class="carsd">
+  <p-editor [(ngModel)]="text" [style]="{ height: '320px' }">
+    <ng-template #header>
+      <span class="ql-formats">
+        <button type="button" class="ql-bold" aria-label="Bold"></button>
+        <button type="button" class="ql-italic" aria-label="Italic"></button>
+        <button
+          type="button"
+          class="ql-underline"
+          aria-label="Underline"
+        ></button>
+      </span>
+    </ng-template>
+  </p-editor>
+</div>
+
+<i class="pi pi-check"></i>
+<i class="pi pi-times"></i>
+<span class="pi pi-search"></span>
+<span class="pi pi-user"></span>
+<p-editor [(ngModel)]="text" [style]="{ height: '320px' }" />

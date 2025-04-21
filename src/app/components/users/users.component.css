@@ -1,0 +1,16 @@
+img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+img[src=''] {
+  background-color: #ccc;
+  background-size: cover;
+}
+
+.list-disc li {
+  margin-bottom: 5px;
+}
