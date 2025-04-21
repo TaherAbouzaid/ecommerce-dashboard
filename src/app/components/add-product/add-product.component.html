@@ -1,35 +1,183 @@
 <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Product Type</label>
+    <select formControlName="productType">
+      <option value="simple">Simple</option>
+      <option value="variant">Variant</option>
+    </select>
+  </div>
+
   <div formGroupName="title">
     <label>title en</label>
-    <input formControlName="en" placeholder="enter title (en)">
-    <div *ngIf="productForm.get('title.en')?.invalid && productForm.get('title.en')?.touched">
-      title en required
-    </div>
+    <input formControlName="en" placeholder="enter title (en)" />
   </div>
 
   <div formGroupName="title">
     <label>title ar</label>
-    <input formControlName="ar" placeholder="enter title (ar)">
-    <div *ngIf="productForm.get('title.ar')?.invalid && productForm.get('title.ar')?.touched">
-      title ar required
-    </div>
+    <input formControlName="ar" placeholder="enter title (ar)" />
+  </div>
+
+  <div formGroupName="description">
+    <label>description en</label>
+    <input formControlName="en" placeholder="enter description (en)" />
+  </div>
+
+  <div formGroupName="description">
+    <label>description ar</label>
+    <input formControlName="ar" placeholder="enter description (ar)" />
   </div>
 
   <div>
     <label>price</label>
-    <input type="number" formControlName="price" placeholder="price">
-    <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
-      price required and must be equal or bigger than 0
-    </div>
+    <input type="number" formControlName="price" placeholder="price" />
+  </div>
+
+  <div>
+    <label>discount price</label>
+    <input
+      type="number"
+      formControlName="discountPrice"
+      placeholder="discount price"
+    />
   </div>
 
   <div>
     <label>quantity</label>
-    <input type="number" formControlName="quantity" placeholder="quantity">
-    <div *ngIf="productForm.get('quantity')?.invalid && productForm.get('quantity')?.touched">
-      quantity required and must be equal or bigger than 0
+    <input type="number" formControlName="quantity" placeholder="quantity" />
+  </div>
+
+  <div>
+    <label>SKU</label>
+    <input formControlName="sku" placeholder="enter SKU" />
+  </div>
+
+  <div>
+    <label>Brand ID</label>
+    <input formControlName="brandId" placeholder="enter brand ID" />
+  </div>
+
+  <div>
+    <label>Category ID</label>
+    <input formControlName="categoryId" placeholder="enter category ID" />
+  </div>
+
+  <div>
+    <label>Sub-Category ID</label>
+    <input
+      formControlName="subCategoryId"
+      placeholder="enter sub-category ID"
+    />
+  </div>
+
+  <div>
+    <label>Main Image</label>
+    <input type="file" (change)="uploadImage($event, 'mainImage')" />
+  </div>
+
+  <div>
+    <label>Images</label>
+    <input type="file" multiple (change)="uploadImages($event, 'images')" />
+  </div>
+
+  <div>
+    <label>Tags (comma separated)</label>
+    <input formControlName="tags" placeholder="enter tags (e.g., tag1,tag2)" />
+  </div>
+
+  <div>
+    <label>Vendor ID</label>
+    <input formControlName="vendorId" placeholder="enter vendor ID" />
+  </div>
+
+  <!-- قسم الـ Variants (يظهر فقط لو productType = variant) -->
+  <div *ngIf="productForm.get('productType')?.value === 'variant'">
+    <h3>Variants</h3>
+    <button type="button" (click)="addVariant()">Add Variant</button>
+
+    <div
+      *ngFor="let variant of variants.controls; let i = index"
+      [formGroupName]="i"
+    >
+      <h4>Variant {{ i + 1 }}</h4>
+      <button type="button" (click)="removeVariant(i)">Remove Variant</button>
+
+      <div formGroupName="title">
+        <label>title en</label>
+        <input formControlName="en" placeholder="enter title (en)" />
+      </div>
+
+      <div formGroupName="title">
+        <label>title ar</label>
+        <input formControlName="ar" placeholder="enter title (ar)" />
+      </div>
+
+      <!-- قسم الـ Attributes -->
+      <div>
+        <h5>Attributes</h5>
+        <button type="button" (click)="addAttribute(i)">Add Attribute</button>
+        <div
+          *ngFor="let attr of getAttributes(i).controls; let attrIndex = index"
+          [formGroupName]="attrIndex"
+        >
+          <input
+            formControlName="key"
+            placeholder="Attribute Key (e.g., color)"
+          />
+          <input
+            formControlName="value"
+            placeholder="Attribute Value (e.g., red)"
+          />
+          <button type="button" (click)="removeAttribute(i, attrIndex)">
+            Remove
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label>price</label>
+        <input type="number" formControlName="price" placeholder="price" />
+      </div>
+
+      <div>
+        <label>discount price</label>
+        <input
+          type="number"
+          formControlName="discountPrice"
+          placeholder="discount price"
+        />
+      </div>
+
+      <div>
+        <label>quantity</label>
+        <input
+          type="number"
+          formControlName="quantity"
+          placeholder="quantity"
+        />
+      </div>
+
+      <div>
+        <label>Main Image</label>
+        <input type="file" (change)="uploadImage($event, 'mainImage', i)" />
+      </div>
+
+      <div>
+        <label>Images</label>
+        <input
+          type="file"
+          multiple
+          (change)="uploadImages($event, 'images', i)"
+        />
+      </div>
+
+      <div>
+        <label>SKU</label>
+        <input formControlName="sku" placeholder="enter SKU" />
+      </div>
     </div>
   </div>
 
-  <button type="submit" [disabled]="productForm.invalid">add new prod</button>
+  <!-- <p-editor formControlName="text" [style]="{ height: '320px' }" /> -->
+
+  <button type="submit">add new prod</button>
 </form>
