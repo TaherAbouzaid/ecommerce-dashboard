@@ -1,0 +1,36 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <label>Full Name:</label>
+    <input type="text" formControlName="name" />
+    <div *ngIf="submitted && f['name'].errors?.['required']">Name is required</div>
+  
+    <label>Email:</label>
+    <input type="email" formControlName="email" />
+    <div *ngIf="submitted && f['email'].errors?.['required']">Email is required</div>
+    <div *ngIf="submitted && f['email'].errors?.['email']">Invalid email</div>
+  
+    <label>Password:</label>
+    <input type="password" formControlName="password" />
+    <div *ngIf="submitted && f['password'].errors?.['required']">Password is required</div>
+    <div *ngIf="submitted && f['password'].errors?.['minlength']">Min 6 characters</div>
+  
+    <label>Confirm Password:</label>
+    <input type="password" formControlName="confirmPassword" />
+    <div *ngIf="submitted && f['confirmPassword'].errors?.['required']">Confirm your password</div>
+    <div *ngIf="registerForm.errors?.['mismatch'] && submitted">Passwords do not match</div>
+  
+    <label>Role:</label>
+    <select formControlName="role">
+      <option value="" disabled>Select Role</option>
+      <option value="Customer">Customer</option>
+      <option value="Main admin">Main admin</option>
+      <option value="Shop manager">Shop manager</option>
+
+      <!-- customer' | 'main admin' | 'shop manager' | 'vendor -->
+    </select>
+    <div *ngIf="submitted && f['role'].errors?.['required']">Role is required</div>
+  
+    <button type="submit" [disabled]="registerForm.invalid || loading">
+      {{ loading ? 'Registering...' : 'Register' }}
+    </button>
+  </form>
+  

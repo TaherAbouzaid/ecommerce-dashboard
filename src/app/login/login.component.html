@@ -1,0 +1,63 @@
+<div class="login-container">
+  <div class="login-box">
+    <h2>Login</h2>
+    <p>Welcome back! Please enter your details.</p>
+
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+      <!-- Email Field -->
+      <label for="email">Email</label>
+      <input 
+        type="email" 
+        id="email" 
+        formControlName="email" 
+        placeholder="Enter your email"
+      >
+      
+      <!-- Email error messages -->
+      <div class="error" *ngIf="f['email'].errors?.['required'] && f['email'].touched">
+        Email is required!
+      </div>
+      <div class="error" *ngIf="f['email'].errors?.['email'] && f['email'].touched">
+        Invalid email format!
+      </div>
+
+      <!-- Password Field -->
+      <label for="password">Password</label>
+      <div class="password-wrapper">
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          placeholder="Enter your password"
+        >
+        <a class="forgot" href="#">Forgot password?</a>
+      </div>
+      
+      <!-- Password error messages -->
+      <div class="error" *ngIf="f['password'].errors?.['required'] && f['password'].touched">
+        Password is required!
+      </div>
+
+      <!-- Firebase error message -->
+      <div class="error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Remember Me -->
+      <div class="checkbox-group">
+        <input type="checkbox" id="rememberMe" formControlName="rememberMe">
+        <label for="rememberMe" style="margin-left: 5px; font-weight: normal;">Remember me</label>
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" [disabled]="loginForm.invalid || isLoading">
+        <span *ngIf="!isLoading">Login</span>
+        <span *ngIf="isLoading">Logging in...</span>
+      </button>
+    </form>
+
+    <div class="or">or</div>
+    
+    <!-- Social login buttons can be added here -->
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+  <div formGroupName="title">
+    <label>title en</label>
+    <input formControlName="en" placeholder="enter title (en)">
+    <div *ngIf="productForm.get('title.en')?.invalid && productForm.get('title.en')?.touched">
+      title en required
+    </div>
+  </div>
+
+  <div formGroupName="title">
+    <label>title ar</label>
+    <input formControlName="ar" placeholder="enter title (ar)">
+    <div *ngIf="productForm.get('title.ar')?.invalid && productForm.get('title.ar')?.touched">
+      title ar required
+    </div>
+  </div>
+
+  <div>
+    <label>price</label>
+    <input type="number" formControlName="price" placeholder="price">
+    <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+      price required and must be equal or bigger than 0
+    </div>
+  </div>
+
+  <div>
+    <label>quantity</label>
+    <input type="number" formControlName="quantity" placeholder="quantity">
+    <div *ngIf="productForm.get('quantity')?.invalid && productForm.get('quantity')?.touched">
+      quantity required and must be equal or bigger than 0
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="productForm.invalid">add new prod</button>
+</form>
