@@ -1,9 +1,18 @@
 <div class="card">
-  <form [formGroup]="formGroup">
+  <form
+    [formGroup]="formGroup"
+    [style]="{ backgroundColor: '#eee', color: 'red' }"
+  >
     <p-editor formControlName="text" [style]="{ height: '320px' }" />
   </form>
 </div>
+<div class="card">
+  <form [formGroup]="formGroup">
+    <p-editor-toolbar formControlName="text" [style]="{ height: '320px' }" />
+  </form>
+</div>
 
+<!--
 <div class="carsd">
   <p-editor [(ngModel)]="text" [style]="{ height: '320px' }">
     <ng-template #header>
@@ -24,4 +33,4 @@
 <i class="pi pi-times"></i>
 <span class="pi pi-search"></span>
 <span class="pi pi-user"></span>
-<p-editor [(ngModel)]="text" [style]="{ height: '320px' }" />
+<p-editor [(ngModel)]="text" [style]="{ height: '320px' }" /> -->
