@@ -4,12 +4,19 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 
 import { routes } from './app.routes';
-;
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore())]
+    provideFirestore(() => getFirestore()), provideAnimationsAsync(),provideStorage(() => getStorage()),
+        providePrimeNG({
+            theme: {
+                preset: Aura
+            }
+        })]
 };
