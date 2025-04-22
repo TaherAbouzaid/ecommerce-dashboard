@@ -1,18 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/Product/product.service';
 import { CommonModule } from '@angular/common';
 import { Product, Variant } from '../../models/products';
 import { Timestamp } from '@angular/fire/firestore';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { Editor } from 'primeng/editor';
+import { InputNumber } from 'primeng/inputnumber';
+import { Fluid } from 'primeng/fluid';
+import { FileUpload } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
+// import { FileUploadModule } from 'primeng/fileupload';
+import { DropdownModule } from 'primeng/dropdown';
+import { FieldsetModule } from 'primeng/fieldset';
+// import { InputNumberModule } from 'primeng/inputnumber';
+
+
 
 @Component({
   selector: 'app-add-product',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule,ToastModule, ButtonModule, CommonModule,FloatLabelModule,FieldsetModule, InputTextModule, FormsModule, Editor,InputNumber, Fluid,InputTextModule,DropdownModule],
   templateUrl: './add-product.component.html',
 })
 export class AddProductComponent implements OnInit {
   productForm: FormGroup;
+
+
 
   constructor(private fb: FormBuilder, private productService: ProductService) {
     this.productForm = this.fb.group({
@@ -49,6 +65,8 @@ export class AddProductComponent implements OnInit {
       createdAt: [Timestamp.now()],
       updatedAt: [Timestamp.now()],
     });
+
+
   }
 
   ngOnInit() {}
