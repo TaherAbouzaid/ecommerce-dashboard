@@ -1,145 +1,94 @@
 
 <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
 
-<div class=" main-c grid"  [ngStyle]="{'background-color': ' rgba(255, 255, 255, 0.789)', 'padding-top':'20px', 'width':'100%', 'display': 'flex', 'flex-direction': 'row'}" >
+  <div class=" grid " >
 
-  <!-- first section -->
-<div  class="lg:col-12" [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
-  <h1>Add Product</h1>
-  <p-button label="Add Product" severity="success" />
+    <!-- Header -->
+    <div  class="lg:col-12" [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
+      <h1>Add Product</h1>
+      <p-button label="Add Product" severity="success" [disabled]="productForm.invalid" />
+    </div>
 
 
-</div>
-<!-- second section -->
-<div class="grid lg:col-12 "[ngStyle]="{ 'padding-top': '20px', 'margin-top': '10px','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
+    <div class="lg:col-8">
 
-<!-- genral info -->
-  <div class="lg:col-8" [ngStyle]="{'background-color': 'white', 'border-radius': '10px','padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '60%'}">
+      <!-- genral info -->
+   <div [ngStyle]="{'background-color': 'white', 'border-radius': '10px','padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
     <h2 style="padding: 20px;">General Information</h2>
 
+    <div>
      <!-- product Name  -->
- <h5>Product Name</h5>
-  <div class="card flex flex-wrap justify-between items-end gap-8" >
-   <div style="flex: 1;" formGroupName="title">
+    <h5 style="padding: 10px;">Product Name</h5>
+    <div class="grid card flex flex-wrap justify-between items-end gap-8" >
+     <div style="flex: 1;" formGroupName="title">
       <p-floatlabel variant="in">
         <input pInputText id="pName-EN" formControlName="en" style="width: 100%;" />
         <label for="pName-EN">Product Name (EN)</label>
       </p-floatlabel>
-    </div>
+     </div>
 
-   <div style="flex: 1;" formGroupName="title">
-    <p-floatlabel variant="in">
+     <div style="flex: 1;" formGroupName="title">
+      <p-floatlabel variant="in">
       <input pInputText id="pName-ar" formControlName="ar" style="width: 100%;"  />
       <label for="pName-ar">Product Name (AR)</label>
-    </p-floatlabel>
-  </div>
+      </p-floatlabel>
+     </div>
+    </div>
 
      <!-- product description -->
-   <div>
-    <h5 style="padding-top: 30px;">Product Description(EN) </h5>
-    <div formGroupName="description">
-      <p-editor formControlName="en" [style]="{ height: '200px' }" />
-    </div>
-   </div>
+     <div>
+     <h5 style="padding-top: 30px;">Product Description(EN) </h5>
+      <div formGroupName="description">
+        <p-editor formControlName="en" [style]="{ height: '200px' }" />
+      </div>
+     </div>
 
 
-    <div>
-      <h5 style="padding-top: 20px;">Product Description(AR) </h5>
+     <div>
+     <h5 style="padding-top: 20px;">Product Description(AR) </h5>
       <div formGroupName="description">
         <p-editor formControlName="ar" [style]="{ height: '200px' }" />
       </div>
+     </div>
     </div>
 
+   </div>
 
+   <!-- Price & quantity -->
 
-
-
-
-
-  <!-- Media -->
-  <!-- <div class="lg:col-4"
-  [ngStyle]="{'background-color': 'white',
-  'border-radius': '10px',
-  'padding':'20px',
-  'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '30%'}">
-     <h1>Product Media</h1>
-     <div class="card flex flex-col gap-6 items-center justify-center">
-      <p-toast />
-      <p-fileupload #fu mode="basic" name="mainImage"
-       chooseLabel="Choose"
-       chooseIcon="pi pi-upload"
-       name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
-       accept="image/*" (onUpload)="onUpload($event)" [auto]="true" [maxFileSize]="1000000" [multiple]="false"/>
-       <input type="file" (change)="uploadImage($event, 'mainImage', i)" />
-       <p-button label="Upload" (onClick)="fu.upload()" severity="secondary" />
-  </div> -->
- <!--
-
-    <p-fileUpload name="images" mode="basic" accept="image/*" (onUpload)="onUpload($event)" [auto]="true" [maxFileSize]="1000000"></p-fileUpload>
-   -->
-
-  </div>
-
-</div>
-</div>
-
-<!-- third section -->
-
-<div class="grid lg:col-12 "[ngStyle]="{ 'padding-top': '20px', 'margin-top': '10px'}">
-  <!-- price -->
-  <div class="lg:col-8"[ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-    <h2 style="padding: 20px;">Pricing</h2>
+  <div [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+    <h2 style="padding: 20px;">Price & Quantity</h2>
     <p-fluid class=" flex flex-wrap gap-4 " style="padding-top: 10px;">
       <div class="flex-auto">
-          <label class="mb-2 block font-bold" for="stacked">
-              Base Price
-          </label>
-          <p-inputnumber formControlName="price"  inputId="price" mode="currency" currency="USD" />
+        <p-floatlabel variant="on" style="flex: 1;">
+          <p-inputnumber formControlName="price" inputId="on_label" mode="currency" currency="USD" locale="en-US" />
+          <label for="on_label">Base Price</label>
+      </p-floatlabel>
+      </div>
+    </p-fluid>
+
+    <p-fluid class=" flex flex-wrap gap-4 " style="padding-top: 10px;">
+      <div class="flex-auto">
+        <p-floatlabel variant="on" >
+          <p-inputnumber formControlName="discountPrice" inputId="on_label" prefix="%" locale="en-US" />
+          <label for="on_label">Discount Price</label>
+        </p-floatlabel>
       </div>
       <div class="flex-auto">
-        <label class="font-bold block mb-2" for="percent">
-           Discount Percentage(%)
-        </label>
-        <p-inputnumber formControlName="discountPrice" inputId="percent" prefix="%" />
-    </div>
-      </p-fluid>
-  </div>
-
-  <!-- catagory -->
-  <div class="lg:col-4"[ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-    <h2 style="padding: 20px;">Product Category</h2>
-    <div class="card flex flex-wrap justify-between items-end gap-2" >
-      <div class="flex flex-col gap-2">
-          <label for="cat">Catagory</label>
-          <input pInputText id="cat" aria-describedby="username-help" formControlName="categoryId" />
+        <p-floatlabel variant="on" >
+          <p-inputnumber formControlName="quantity" inputId="on_label"  />
+          <label for="on_label">Quantity</label>
+        </p-floatlabel>
       </div>
-      <div class="flex flex-col gap-2">
-        <label for="subCat">Sub Catagory</label>
-        <input pInputText id="subCat" aria-describedby="username-help" formControlName="subCategoryId" />
-    </div>
-    <div class="flex flex-col gap-2">
-      <label for="brandId">Brand Id</label>
-      <input pInputText id="brandId" aria-describedby="username-help" formControlName="brandId" />
-  </div>
-  <div class="flex flex-col gap-2">
-    <label for="vendorId">Vendor Id</label>
-    <input pInputText id="vendorId" aria-describedby="username-help"  formControlName="vendorId" />
-  </div>
-  </div>
-
+    </p-fluid>
   </div>
 
 
-</div>
-
-
-
-<!-- 4th section -->
-<div class="grid lg:col-12 "[ngStyle]="{ 'padding-top': '20px', 'margin-top': '10px'}">
-
-  <!-- product type -->
-  <div class="lg:col-8"[ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+  <!-- Product variant -->
+     <!-- product type -->
+<div [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
     <h2 style="padding: 20px;">Product Variants</h2>
+
     <div style="padding: 20px;">
       <label style="padding: 10px;">Product Type</label>
       <select style="padding: 5px;" formControlName="productType">
@@ -152,31 +101,28 @@
    <div class="grid gap-4 " style="padding: 20px;" *ngIf="productForm.get('productType')?.value === 'variant'">
     <h4>Variants</h4>
     <p-button label="Add Variant" [rounded]="true" severity="success" (click)="addVariant()"/>
-
-
-
+       <!-- var card -->
     <div
     *ngFor="let variant of variants.controls; let i = index"
     [formGroupName]="i"
-    [ngStyle]="{'background-color': 'rgb(218, 215, 215)','border-type ':'solid', 'border-radius': '10px', 'padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}"
+     [ngStyle]="{'background-color': 'rgb(218, 215, 215)','border-type ':'solid', 'border-radius': '10px', 'padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}"
     >
 
-     <div class="card flex flex-wrap justify-between  gap-2 mb-2" >
+     <div class="card flex flex-wrap justify-between  gap-6 mb-2" >
       <h4 style="text-align: center; color: rgb(36, 146, 36);">Variant {{ i + 1 }}</h4>
       <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" (click)="removeVariant(i)" />
-    </div>
-
-      <!-- <button type="button" (click)="removeVariant(i)">Remove Variant</button> -->
+     </div>
 
 
 
-      <div class="card flex flex-wrap justify-between items-end gap-2 mb-2" >
+      <!-- قسم الـ title -->
+      <div class="card flex flex-wrap justify-between items-end gap-2" >
 
       <div formGroupName="title" style="flex: 1;">
       <p-floatlabel variant="on">
         <input pInputText id="on_label" formControlName="en"   />
         <label for="on_label">Product Name (EN)</label>
-    </p-floatlabel>
+      </p-floatlabel>
       </div>
 
       <div formGroupName="title" style="flex: 1;">
@@ -190,84 +136,167 @@
 
       <!-- قسم الـ Attributes -->
       <div>
-        <h5 style="text-align: center; color: rgb(36, 100, 146);">Attributes</h5>
-        <button type="button" (click)="addAttribute(i)">Add Attribute</button>
-        <div
-          *ngFor="let attr of getAttributes(i).controls; let attrIndex = index"
-          [formGroupName]="attrIndex"
-        >
-          <input
-            formControlName="key"
-            placeholder="Attribute Key (e.g., color)"
-          />
-          <input
-            formControlName="value"
-            placeholder="Attribute Value (e.g., red)"
-          />
-          <button type="button" (click)="removeAttribute(i, attrIndex)">
-            Remove
-          </button>
+        <h5 style="text-align: center; padding: 10px;  color: rgb(36, 100, 146);">Attributes</h5>
+
+
+        <div class="card flex flex-wrap justify-between items-end gap-2" >
+          <p-floatlabel variant="on" style="flex: 1;">
+            <p-inputnumber formControlName="price" inputId="on_label" mode="currency" currency="USD" locale="en-US" />
+            <label for="on_label">Price</label>
+          </p-floatlabel>
+          <p-floatlabel variant="on" style="flex: 1;">
+            <p-inputnumber formControlName="discountPrice" inputId="on_label" prefix="%" locale="en-US" />
+            <label for="on_label">Discount Price</label>
+          </p-floatlabel>
+          <p-floatlabel variant="on" style="flex: 1;">
+            <p-inputnumber formControlName="quantity" inputId="on_label"  />
+            <label for="on_label">Quantity</label>
+          </p-floatlabel>
         </div>
+
+
+
+        <div class="card flex flex-wrap justify-between items-end gap-2" style="padding: 10px;" >
+            <div style="flex: 1;">
+              <label>Main Image</label>
+              <input type="file" (change)="uploadImage($event, 'mainImage', i)" />
+            </div>
+
+            <div style="flex: 1;">
+              <label>Images</label>
+              <input
+                type="file"
+                multiple
+                (change)="uploadImages($event, 'images', i)"
+              />
+            </div>
+         </div>
+
+
+
+
+       <div style="padding: 10px;">
+        <!-- <button type="button" (click)="addAttribute(i)">Add Attribute</button> -->
+         <div style="padding: 10px; align-items: center;" >
+           <!-- <p-button label="Add ttribute" variant="text" severity="info" (click)="addAttribute(i)" /> -->
+           <p-button label="Add Attribute" [raised]="true" severity="info" (click)="addAttribute(i)" />
+         </div>
+
+        <div *ngFor="let attr of getAttributes(i).controls; let attrIndex = index" [formGroupName]="attrIndex">
+          <div class="card flex flex-wrap justify-center items-end" style="margin: 5px;">
+          <div  class="flex-auto">
+            <p-floatlabel variant="on">
+              <input pInputText id="on_label" formControlName="key" pSize="small" />
+              <label for="on_label">Attribute Key (e.g., color)</label>
+            </p-floatlabel>
+            </div>
+
+            <div  class="flex-auto">
+            <p-floatlabel variant="on">
+              <input pInputText id="on_label" formControlName="value" pSize="small" />
+              <label for="on_label">Attribute Value (e.g., red)</label>
+            </p-floatlabel>
+            </div>
+            <div class="flex-auto">
+              <p-button icon="pi pi-times" severity="danger" (click)="removeAttribute(i, attrIndex)"/>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <div>
-        <label>price</label>
-        <input type="number" formControlName="price" placeholder="price" />
       </div>
 
-      <div>
-        <label>discount price</label>
-        <input
-          type="number"
-          formControlName="discountPrice"
-          placeholder="discount price"
-        />
-      </div>
-
-      <div>
-        <label>quantity</label>
-        <input
-          type="number"
-          formControlName="quantity"
-          placeholder="quantity"
-        />
-      </div>
-
-      <div>
-        <label>Main Image</label>
-        <input type="file" (change)="uploadImage($event, 'mainImage', i)" />
-      </div>
-
-      <div>
-        <label>Images</label>
-        <input
-          type="file"
-          multiple
-          (change)="uploadImages($event, 'images', i)"
-        />
-      </div>
-
-      <!-- <div>
-        <label>SKU</label>
-        <input formControlName="sku" placeholder="enter SKU" />
-      </div> -->
     </div>
-  </div>
-  </div>
-
-  <!-- tags -->
-  <div class="lg:col-4"[ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-    <h2 style="padding: 20px;">Tags</h2>
-    <p-inputText formControlName="tags" placeholder="enter tags (e.g., tag1,tag2)" />
-    <div>
-      <label>quantity</label>
-      <input type="number" formControlName="quantity" placeholder="quantity" />
     </div>
+   </div>
   </div>
 
-</div>
-</div>
+
+  <!-- right col -->
+
+     <!-- Product Media -->
+   <div class="lg:col-4">
+    <div
+      [ngStyle]="{'background-color': 'white',
+      'border-radius': '10px',
+      'padding':'20px',
+      'margin-top': '10px',
+      'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+     <h2 style="padding: 20px;">Product Media</h2>
+         <div class="grid card flex flex-wrap justify-between items-end gap-3" >
+          <div>
+            <label>Main Image : </label>
+            <input type="file" (change)="uploadImage($event, 'mainImage')" />
+          </div>
+          <div>
+
+            <label>Images : </label>
+            <input type="file" multiple (change)="uploadImages($event, 'images')" />
+          </div>
+      </div>
+    </div>
+
+
+
+  <!-- catagory -->
+  <div [ngStyle]="{'background-color': 'white',
+  'border-radius': '10px',
+  'padding':'20px',
+  'margin-top': '10px',
+  'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+    <h2 style="padding: 20px;">Product Category</h2>
+    <div class="card flex flex-wrap justify-between items-end gap-2" >
+     <div class="flex-auto">
+      <p-floatlabel variant="in">
+      <input pInputText id="categoryId" formControlName="categoryId" style="width: 100%;" />
+      <label for="categoryId">Category Id </label>
+      </p-floatlabel>
+     </div>
+
+     <div class="flex-auto">
+      <p-floatlabel variant="in">
+      <input pInputText id="subCategoryId" formControlName="subCategoryId"  style="width: 100%;" />
+      <label for="subCategoryId">SubCategory Id </label>
+      </p-floatlabel>
+     </div>
+
+     <div class="flex-auto">
+      <p-floatlabel variant="in">
+        <input pInputText id="brandId" formControlName="brandId" style="width: 100%;" />
+        <label for="brandId">Brand Id </label>
+      </p-floatlabel>
+      </div>
+
+     <div class="flex-auto">
+      <p-floatlabel variant="in">
+        <input pInputText id="vendorId" formControlName="vendorId" style="width: 100%;" />
+        <label for="vendorId">vendor Id </label>
+      </p-floatlabel>
+      </div>
+
+
+
+
+
+
+
+
+  </div>
+
+  </div>
+
+
+
+
+  </div>
+
+  </div>
 </form>
+
+
+
+
 
 
 

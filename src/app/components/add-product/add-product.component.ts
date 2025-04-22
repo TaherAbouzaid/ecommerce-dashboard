@@ -12,17 +12,32 @@ import { Fluid } from 'primeng/fluid';
 import { FileUpload } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
-// import { FileUploadModule } from 'primeng/fileupload';
+import { FileUploadModule } from 'primeng/fileupload';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
+import { Validators } from '@angular/forms';
+
 // import { InputNumberModule } from 'primeng/inputnumber';
+
 
 
 
 @Component({
   selector: 'app-add-product',
   standalone: true,
-  imports: [ReactiveFormsModule,ToastModule, ButtonModule, CommonModule,FloatLabelModule,FieldsetModule, InputTextModule, FormsModule, Editor,InputNumber, Fluid,InputTextModule,DropdownModule],
+  imports: [ReactiveFormsModule,
+    ToastModule,
+     ButtonModule,
+    CommonModule,
+    FloatLabelModule,
+    FieldsetModule,
+    InputTextModule,
+    FormsModule,
+    Editor,
+    InputNumber,
+     Fluid,
+     InputTextModule,
+     DropdownModule],
   templateUrl: './add-product.component.html',
 })
 export class AddProductComponent implements OnInit {
@@ -34,8 +49,9 @@ export class AddProductComponent implements OnInit {
     this.productForm = this.fb.group({
       productType: ['simple'],
       title: this.fb.group({
-        en: [''],
-        ar: [''],
+        en: ['', Validators.required],
+        ar: ['', Validators.required],
+
       }),
       description: this.fb.group({
         en: [''],
@@ -144,6 +160,8 @@ export class AddProductComponent implements OnInit {
       }
     }
   }
+
+
 
 
   async uploadImages(event: Event, controlName: string, variantIndex?: number) {
