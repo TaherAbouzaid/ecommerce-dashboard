@@ -7,7 +7,7 @@ import { environment } from '../environments/environment';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 // import Aura from '@primeng/themes/aura';
-import Material from '@primeng/themes/material';
+// import Material from '@primeng/themes/material';
 
 
 import { routes } from './app.routes';
@@ -18,7 +18,7 @@ export const appConfig: ApplicationConfig = {
         providePrimeNG({
             theme: {
                 // preset: Aura
-                preset: Material
+                // preset: Material
             }
     })
   ]

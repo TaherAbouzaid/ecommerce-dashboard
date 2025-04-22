@@ -33,7 +33,6 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => {
       this.users = data;
-      //
       this.originalUsers = JSON.parse(JSON.stringify(data));
       console.log(this.users);
     });
