@@ -6,7 +6,7 @@
     <!-- Header -->
     <div  class="lg:col-12" [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
       <h1>Add Product</h1>
-      <p-button label="Add Product" severity="success" [disabled]="productForm.invalid" />
+      <p-button label="Add Product" severity="success" type="submit" [disabled]="productForm.invalid" />
     </div>
 
 
@@ -108,9 +108,11 @@
      [ngStyle]="{'background-color': 'rgb(218, 215, 215)','border-type ':'solid', 'border-radius': '10px', 'padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}"
     >
 
-     <div class="card flex flex-wrap justify-between  gap-6 mb-2" >
+     <div style="display: flex; justify-content: space-between; " >
+
       <h4 style="text-align: center; color: rgb(36, 146, 36);">Variant {{ i + 1 }}</h4>
-      <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" (click)="removeVariant(i)" />
+
+        <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" (click)="removeVariant(i)" />
      </div>
 
 
@@ -209,6 +211,7 @@
 
     </div>
     </div>
+
    </div>
   </div>
 
