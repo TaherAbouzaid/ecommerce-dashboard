@@ -4,9 +4,32 @@
   <div class=" grid " >
 
     <!-- Header -->
+    <p-toast></p-toast>
     <div  class="lg:col-12" [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
-      <h1>Add Product</h1>
-      <p-button label="Add Product" severity="success" type="submit" [disabled]="productForm.invalid" />
+      <div>
+        <h1>Add Product</h1>
+        <div class="card flex justify-center">
+          <p-breadcrumb class="max-w-full" [model]="items">
+              <ng-template #item let-item>
+                  <ng-container *ngIf="item.route; else elseBlock">
+                      <a [routerLink]="item.route" class="p-breadcrumb-item-link">
+                          <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                          <span class="text-primary font-semibold">{{ item.label }}</span>
+                      </a>
+                  </ng-container>
+                  <ng-template #elseBlock>
+                      <a [href]="item.url">
+                          <span class="text-color">{{ item.label }}</span>
+                      </a>
+                  </ng-template>
+              </ng-template>
+          </p-breadcrumb>
+      </div>
+
+      </div>
+      <p-button label="Add Product" severity="success" type="submit" [disabled]="productForm.invalid" pRipple  />
+      <!-- <p-button type="button" pRipple (click)="showSuccess()" label="Success" severity="success" /> -->
+
     </div>
 
 
@@ -185,7 +208,7 @@
          </div>
 
         <div *ngFor="let attr of getAttributes(i).controls; let attrIndex = index" [formGroupName]="attrIndex">
-          <div class="card flex flex-wrap justify-center items-end" style="margin: 5px;">
+          <div class="card flex flex-wrap justify-center items-end" style="margin: 10px; border: 1px dashed rgb(9, 103, 105); padding: 4px; border-radius: 5px;">
           <div  class="flex-auto">
             <p-floatlabel variant="on">
               <input pInputText id="on_label" formControlName="key" pSize="small" />
@@ -200,7 +223,9 @@
             </p-floatlabel>
             </div>
             <div class="flex-auto">
-              <p-button icon="pi pi-times" severity="danger" (click)="removeAttribute(i, attrIndex)"/>
+              <p-button icon="pi pi-trash" label="Delete" severity="danger" size="small" (click)="removeAttribute(i, attrIndex)"/>
+              <!-- <p-button label="Delete" icon="pi pi-trash" /> -->
+
             </div>
           </div>
         </div>
@@ -238,6 +263,14 @@
             <input type="file" multiple (change)="uploadImages($event, 'images')" />
           </div>
       </div>
+
+
+
+
+
+
+
+
     </div>
 
 
@@ -289,6 +322,23 @@
 
   </div>
 
+  <!-- Tags -->
+  <div [ngStyle]="{'background-color': 'white',
+  'border-radius': '10px',
+  'padding':'20px',
+  'margin-top': '10px',
+  'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+    <h2 style="padding: 20px;">Product Tags</h2>
+    <div class="card flex flex-wrap justify-between items-end gap-2" >
+      <div class="flex-auto">
+        <p-floatlabel variant="in">
+          <input pInputText id="tags" formControlName="tags" style="width: 100%;" />
+          <label for="tags">Tags (e.g., tag1,tag2)</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </div>
+
 
 
 
@@ -298,7 +348,10 @@
 </form>
 
 
-
+ <!-- <div>
+    <label>Tags (comma separated)</label>
+    <input formControlName="tags" placeholder="enter tags (e.g., tag1,tag2)" />
+  </div> -->
 
 
 

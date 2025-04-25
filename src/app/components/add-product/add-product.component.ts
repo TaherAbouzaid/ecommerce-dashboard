@@ -16,6 +16,15 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
 import { Validators } from '@angular/forms';
+import { Toast } from 'primeng/toast';
+import { Ripple } from 'primeng/ripple';
+import { MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { RouterModule } from '@angular/router';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+
+
 
 // import { InputNumberModule } from 'primeng/inputnumber';
 
@@ -37,7 +46,14 @@ import { Validators } from '@angular/forms';
     InputNumber,
      Fluid,
      InputTextModule,
-     DropdownModule],
+     DropdownModule,
+     Toast,
+     Ripple,
+     Breadcrumb,
+    RouterModule
+    ],
+     providers: [MessageService],
+
   templateUrl: './add-product.component.html',
 })
 export class AddProductComponent implements OnInit {
@@ -45,7 +61,7 @@ export class AddProductComponent implements OnInit {
 
 
 
-  constructor(private fb: FormBuilder, private productService: ProductService) {
+  constructor(private fb: FormBuilder, private productService: ProductService, private messageService: MessageService) {
     this.productForm = this.fb.group({
       productType: ['simple'],
       title: this.fb.group({
@@ -85,7 +101,16 @@ export class AddProductComponent implements OnInit {
 
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+      this.items = [{ icon: 'pi pi-home', route: '/' }, { label: 'Add Product',route: '/add-product' }];
+
+
+  }
+
+  items: MenuItem[] | undefined;
+
+  home: MenuItem | undefined;
+
 
 
   get variants(): FormArray {
@@ -208,8 +233,14 @@ export class AddProductComponent implements OnInit {
     this.productService.addProduct(productData as Product, variants as Variant[]).then(() => {
       console.log('Done');
       this.productForm.reset();
+      this.showSuccess();
+
     }).catch(error => {
       console.error('Error adding product:', error);
     });
+
   }
+  showSuccess() {
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product add succesfuly' });
+};
 }

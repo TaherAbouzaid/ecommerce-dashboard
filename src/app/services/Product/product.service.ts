@@ -39,6 +39,8 @@ export class ProductService {
     return collectionData(productsCollection, { idField: 'id' }) as Observable<Product[]>;
   }
 
+
+
   // جلب الـ variants لمنتج معين
   getVariants(productId: string): Observable<Variant[]> {
     const variantsCollection = firestoreCollection(this.firestore, `products/${productId}/variants`);

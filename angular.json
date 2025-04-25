@@ -25,12 +25,9 @@
               }
             ],
             "styles": [
-<<<<<<< HEAD
               "node_modules/primeflex/primeflex.css",
               "node_modules/primeicons/primeicons.css",
-=======
-           
->>>>>>> 3cb194a306c5f97f5d65c7e428a21f65560d5841
+
               "src/styles.css"
             ],
             "scripts": []
