@@ -1,6 +1,6 @@
 import { Timestamp } from '@angular/fire/firestore';
 
-interface LocalizedString {
+export interface LocalizedString {
   en: string;
   ar: string;
 }

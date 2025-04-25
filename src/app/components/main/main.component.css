@@ -16,7 +16,7 @@ body, html {
 }
 
 .side-bar {
-  background-color: var(--main-color-alt);
+  background-color: #eee;
   height: 100%;
   overflow-y: auto;
   padding: 20px;

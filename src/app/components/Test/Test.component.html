@@ -1,9 +1,18 @@
 <div class="card">
-  <form [formGroup]="formGroup">
+  <form
+    [formGroup]="formGroup"
+    [style]="{ backgroundColor: '#eee', color: 'red' }"
+  >
     <p-editor formControlName="text" [style]="{ height: '320px' }" />
   </form>
 </div>
+<div class="card">
+  <form [formGroup]="formGroup">
+    <p-editor-toolbar formControlName="text" [style]="{ height: '320px' }" />
+  </form>
+</div>
 
+<!--
 <div class="carsd">
   <p-editor [(ngModel)]="text" [style]="{ height: '320px' }">
     <ng-template #header>
@@ -25,10 +34,22 @@
 <span class="pi pi-search"></span>
 <span class="pi pi-user"></span>
 <p-editor [(ngModel)]="text" [style]="{ height: '320px' }" />
-<!-- nnnnnn -->
+ nnnnnn -->
 <div class="card flex flex-col gap-6 items-center justify-center">
   <p-toast />
-  <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]" accept="image/*" maxFileSize="1000000"  />
+  <p-fileupload
+    #fu
+    mode="basic"
+    chooseLabel="Choose"
+    chooseIcon="pi pi-upload"
+    name="demo[]"
+    accept="image/*"
+    maxFileSize="1000000"
+  />
   <p-button label="Upload" severity="secondary" />
 </div>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam quia nobis sed aspernatur cum id, molestias officiis hic vitae praesentium. Ducimus quia fuga voluptates tempore autem voluptatum molestiae, amet incidunt?</p>
+<p>
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam quia nobis sed
+  aspernatur cum id, molestias officiis hic vitae praesentium. Ducimus quia fuga
+  voluptates tempore autem voluptatum molestiae, amet incidunt?
+</p>

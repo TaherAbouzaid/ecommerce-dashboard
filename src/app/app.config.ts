@@ -7,6 +7,7 @@ import { environment } from '../environments/environment';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+// import Material from '@primeng/themes/material';
 
 
 import { routes } from './app.routes';
@@ -15,10 +16,14 @@ export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()), provideAnimationsAsync(),provideStorage(() => getStorage()),
         providePrimeNG({
-            theme: {
-                preset: Aura
-            }
-        })
-      ]
-
+      theme: {
+        preset: Aura,
+        options: {
+          prefix: 'p',
+          darkModeSelector: false,
+          cssLayer: false,
+        },
+      },
+    }),
+  ]
 };
