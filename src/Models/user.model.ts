@@ -1,4 +1,3 @@
-
 export interface User {
     userId: string;
     fullName: string;
@@ -14,4 +13,5 @@ export interface User {
     }[];
     createdAt: Date;
     updatedAt: Date;
+    selected?: boolean;
   }
