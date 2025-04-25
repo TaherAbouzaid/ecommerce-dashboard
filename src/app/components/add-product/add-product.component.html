@@ -1,35 +1,506 @@
+
 <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-  <div formGroupName="title">
-    <label>title en</label>
-    <input formControlName="en" placeholder="enter title (en)">
-    <div *ngIf="productForm.get('title.en')?.invalid && productForm.get('title.en')?.touched">
-      title en required
+
+  <div class=" grid " >
+
+    <!-- Header -->
+    <div  class="lg:col-12" [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
+      <h1>Add Product</h1>
+      <p-button label="Add Product" severity="success" [disabled]="productForm.invalid" />
     </div>
+
+
+    <div class="lg:col-8">
+
+      <!-- genral info -->
+   <div [ngStyle]="{'background-color': 'white', 'border-radius': '10px','padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+    <h2 style="padding: 20px;">General Information</h2>
+
+    <div>
+     <!-- product Name  -->
+    <h5 style="padding: 10px;">Product Name</h5>
+    <div class="grid card flex flex-wrap justify-between items-end gap-8" >
+     <div style="flex: 1;" formGroupName="title">
+      <p-floatlabel variant="in">
+        <input pInputText id="pName-EN" formControlName="en" style="width: 100%;" />
+        <label for="pName-EN">Product Name (EN)</label>
+      </p-floatlabel>
+     </div>
+
+     <div style="flex: 1;" formGroupName="title">
+      <p-floatlabel variant="in">
+      <input pInputText id="pName-ar" formControlName="ar" style="width: 100%;"  />
+      <label for="pName-ar">Product Name (AR)</label>
+      </p-floatlabel>
+     </div>
+    </div>
+
+     <!-- product description -->
+     <div>
+     <h5 style="padding-top: 30px;">Product Description(EN) </h5>
+      <div formGroupName="description">
+        <p-editor formControlName="en" [style]="{ height: '200px' }" />
+      </div>
+     </div>
+
+
+     <div>
+     <h5 style="padding-top: 20px;">Product Description(AR) </h5>
+      <div formGroupName="description">
+        <p-editor formControlName="ar" [style]="{ height: '200px' }" />
+      </div>
+     </div>
+    </div>
+
+   </div>
+
+   <!-- Price & quantity -->
+
+  <div [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+    <h2 style="padding: 20px;">Price & Quantity</h2>
+    <p-fluid class=" flex flex-wrap gap-4 " style="padding-top: 10px;">
+      <div class="flex-auto">
+        <p-floatlabel variant="on" style="flex: 1;">
+          <p-inputnumber formControlName="price" inputId="on_label" mode="currency" currency="USD" locale="en-US" />
+          <label for="on_label">Base Price</label>
+      </p-floatlabel>
+      </div>
+    </p-fluid>
+
+    <p-fluid class=" flex flex-wrap gap-4 " style="padding-top: 10px;">
+      <div class="flex-auto">
+        <p-floatlabel variant="on" >
+          <p-inputnumber formControlName="discountPrice" inputId="on_label" prefix="%" locale="en-US" />
+          <label for="on_label">Discount Price</label>
+        </p-floatlabel>
+      </div>
+      <div class="flex-auto">
+        <p-floatlabel variant="on" >
+          <p-inputnumber formControlName="quantity" inputId="on_label"  />
+          <label for="on_label">Quantity</label>
+        </p-floatlabel>
+      </div>
+    </p-fluid>
+  </div>
+
+
+  <!-- Product variant -->
+     <!-- product type -->
+<div [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+    <h2 style="padding: 20px;">Product Variants</h2>
+
+    <div style="padding: 20px;">
+      <label style="padding: 10px;">Product Type</label>
+      <select style="padding: 5px;" formControlName="productType">
+        <option value="simple">Simple</option>
+        <option value="variant">Variant</option>
+      </select>
+    </div>
+
+   <!-- قسم الـ Variants (يظهر فقط لو productType = variant) -->
+   <div class="grid gap-4 " style="padding: 20px;" *ngIf="productForm.get('productType')?.value === 'variant'">
+    <h4>Variants</h4>
+    <p-button label="Add Variant" [rounded]="true" severity="success" (click)="addVariant()"/>
+       <!-- var card -->
+    <div
+    *ngFor="let variant of variants.controls; let i = index"
+    [formGroupName]="i"
+     [ngStyle]="{'background-color': 'rgb(218, 215, 215)','border-type ':'solid', 'border-radius': '10px', 'padding':'20px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}"
+    >
+
+     <div class="card flex flex-wrap justify-between  gap-6 mb-2" >
+      <h4 style="text-align: center; color: rgb(36, 146, 36);">Variant {{ i + 1 }}</h4>
+      <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" (click)="removeVariant(i)" />
+     </div>
+
+
+
+      <!-- قسم الـ title -->
+      <div class="card flex flex-wrap justify-between items-end gap-2" >
+
+      <div formGroupName="title" style="flex: 1;">
+      <p-floatlabel variant="on">
+        <input pInputText id="on_label" formControlName="en"   />
+        <label for="on_label">Product Name (EN)</label>
+      </p-floatlabel>
+      </div>
+
+      <div formGroupName="title" style="flex: 1;">
+      <p-floatlabel variant="on">
+        <input pInputText id="on_label" formControlName="ar"   />
+        <label for="on_label">Product Name (AR)</label>
+      </p-floatlabel>
+      </div>
+      </div>
+
+
+      <!-- قسم الـ Attributes -->
+      <div>
+        <h5 style="text-align: center; padding: 10px;  color: rgb(36, 100, 146);">Attributes</h5>
+
+
+        <div class="card flex flex-wrap justify-between items-end gap-2" >
+          <p-floatlabel variant="on" style="flex: 1;">
+            <p-inputnumber formControlName="price" inputId="on_label" mode="currency" currency="USD" locale="en-US" />
+            <label for="on_label">Price</label>
+          </p-floatlabel>
+          <p-floatlabel variant="on" style="flex: 1;">
+            <p-inputnumber formControlName="discountPrice" inputId="on_label" prefix="%" locale="en-US" />
+            <label for="on_label">Discount Price</label>
+          </p-floatlabel>
+          <p-floatlabel variant="on" style="flex: 1;">
+            <p-inputnumber formControlName="quantity" inputId="on_label"  />
+            <label for="on_label">Quantity</label>
+          </p-floatlabel>
+        </div>
+
+
+
+        <div class="card flex flex-wrap justify-between items-end gap-2" style="padding: 10px;" >
+            <div style="flex: 1;">
+              <label>Main Image</label>
+              <input type="file" (change)="uploadImage($event, 'mainImage', i)" />
+            </div>
+
+            <div style="flex: 1;">
+              <label>Images</label>
+              <input
+                type="file"
+                multiple
+                (change)="uploadImages($event, 'images', i)"
+              />
+            </div>
+         </div>
+
+
+
+
+       <div style="padding: 10px;">
+        <!-- <button type="button" (click)="addAttribute(i)">Add Attribute</button> -->
+         <div style="padding: 10px; align-items: center;" >
+           <!-- <p-button label="Add ttribute" variant="text" severity="info" (click)="addAttribute(i)" /> -->
+           <p-button label="Add Attribute" [raised]="true" severity="info" (click)="addAttribute(i)" />
+         </div>
+
+        <div *ngFor="let attr of getAttributes(i).controls; let attrIndex = index" [formGroupName]="attrIndex">
+          <div class="card flex flex-wrap justify-center items-end" style="margin: 5px;">
+          <div  class="flex-auto">
+            <p-floatlabel variant="on">
+              <input pInputText id="on_label" formControlName="key" pSize="small" />
+              <label for="on_label">Attribute Key (e.g., color)</label>
+            </p-floatlabel>
+            </div>
+
+            <div  class="flex-auto">
+            <p-floatlabel variant="on">
+              <input pInputText id="on_label" formControlName="value" pSize="small" />
+              <label for="on_label">Attribute Value (e.g., red)</label>
+            </p-floatlabel>
+            </div>
+            <div class="flex-auto">
+              <p-button icon="pi pi-times" severity="danger" (click)="removeAttribute(i, attrIndex)"/>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      </div>
+
+    </div>
+    </div>
+   </div>
+  </div>
+
+
+  <!-- right col -->
+
+     <!-- Product Media -->
+   <div class="lg:col-4">
+    <div
+      [ngStyle]="{'background-color': 'white',
+      'border-radius': '10px',
+      'padding':'20px',
+      'margin-top': '10px',
+      'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+     <h2 style="padding: 20px;">Product Media</h2>
+         <div class="grid card flex flex-wrap justify-between items-end gap-3" >
+          <div>
+            <label>Main Image : </label>
+            <input type="file" (change)="uploadImage($event, 'mainImage')" />
+          </div>
+          <div>
+
+            <label>Images : </label>
+            <input type="file" multiple (change)="uploadImages($event, 'images')" />
+          </div>
+      </div>
+    </div>
+
+
+
+  <!-- catagory -->
+  <div [ngStyle]="{'background-color': 'white',
+  'border-radius': '10px',
+  'padding':'20px',
+  'margin-top': '10px',
+  'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
+    <h2 style="padding: 20px;">Product Category</h2>
+    <div class="card flex flex-wrap justify-between items-end gap-2" >
+     <div class="flex-auto">
+      <p-floatlabel variant="in">
+      <input pInputText id="categoryId" formControlName="categoryId" style="width: 100%;" />
+      <label for="categoryId">Category Id </label>
+      </p-floatlabel>
+     </div>
+
+     <div class="flex-auto">
+      <p-floatlabel variant="in">
+      <input pInputText id="subCategoryId" formControlName="subCategoryId"  style="width: 100%;" />
+      <label for="subCategoryId">SubCategory Id </label>
+      </p-floatlabel>
+     </div>
+
+     <div class="flex-auto">
+      <p-floatlabel variant="in">
+        <input pInputText id="brandId" formControlName="brandId" style="width: 100%;" />
+        <label for="brandId">Brand Id </label>
+      </p-floatlabel>
+      </div>
+
+     <div class="flex-auto">
+      <p-floatlabel variant="in">
+        <input pInputText id="vendorId" formControlName="vendorId" style="width: 100%;" />
+        <label for="vendorId">vendor Id </label>
+      </p-floatlabel>
+      </div>
+
+
+
+
+
+
+
+
+  </div>
+
+  </div>
+
+
+
+
+  </div>
+
+  </div>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <form [formGroup]="productForm" (ngSubmit)="onSubmit()"> -->
+
+
+
+  <!-- <div>
+    <label>Product Type</label>
+    <select formControlName="productType">
+      <option value="simple">Simple</option>
+      <option value="variant">Variant</option>
+    </select>
+  </div> -->
+
+  <!-- <div formGroupName="title">
+    <label>title en</label>
+    <input formControlName="en" placeholder="enter title (en)" />
   </div>
 
   <div formGroupName="title">
     <label>title ar</label>
-    <input formControlName="ar" placeholder="enter title (ar)">
-    <div *ngIf="productForm.get('title.ar')?.invalid && productForm.get('title.ar')?.touched">
-      title ar required
-    </div>
+    <input formControlName="ar" placeholder="enter title (ar)" />
   </div>
 
-  <div>
+  <div formGroupName="description">
+    <label>description en</label>
+    <input formControlName="en" placeholder="enter description (en)" />
+  </div>
+
+  <div formGroupName="description">
+    <label>description ar</label>
+    <input formControlName="ar" placeholder="enter description (ar)" />
+  </div> -->
+
+  <!-- <div>
     <label>price</label>
-    <input type="number" formControlName="price" placeholder="price">
-    <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
-      price required and must be equal or bigger than 0
-    </div>
+    <input type="number" formControlName="price" placeholder="price" />
   </div>
 
   <div>
+    <label>discount price</label>
+    <input
+      type="number"
+      formControlName="discountPrice"
+      placeholder="discount price"
+    />
+  </div> -->
+
+  <!-- <div>
     <label>quantity</label>
-    <input type="number" formControlName="quantity" placeholder="quantity">
-    <div *ngIf="productForm.get('quantity')?.invalid && productForm.get('quantity')?.touched">
-      quantity required and must be equal or bigger than 0
-    </div>
+    <input type="number" formControlName="quantity" placeholder="quantity" />
+  </div> -->
+
+  <!-- <div>
+    <label>SKU</label>
+    <input formControlName="sku" placeholder="enter SKU" />
+  </div> -->
+<!--
+  <div>
+    <label>Brand ID</label>
+    <input formControlName="brandId" placeholder="enter brand ID" />
   </div>
 
-  <button type="submit" [disabled]="productForm.invalid">add new prod</button>
-</form>
+  <div>
+    <label>Category ID</label>
+    <input formControlName="categoryId" placeholder="enter category ID" />
+  </div>
+
+  <div>
+    <label>Sub-Category ID</label>
+    <input
+      formControlName="subCategoryId"
+      placeholder="enter sub-category ID"
+    />
+  </div> -->
+
+  <!-- <div>
+    <label>Main Image</label>
+    <input type="file" (change)="uploadImage($event, 'mainImage')" />
+  </div> -->
+
+  <!-- <div>
+    <label>Images</label>
+    <input type="file" multiple (change)="uploadImages($event, 'images')" />
+  </div> -->
+
+  <!-- <div>
+    <label>Tags (comma separated)</label>
+    <input formControlName="tags" placeholder="enter tags (e.g., tag1,tag2)" />
+  </div> -->
+
+  <!-- <div>
+    <label>Vendor ID</label>
+    <input formControlName="vendorId" placeholder="enter vendor ID" />
+  </div> -->
+
+  <!-- قسم الـ Variants (يظهر فقط لو productType = variant) -->
+   <!-- <div *ngIf="productForm.get('productType')?.value === 'variant'">
+    <h3>Variants</h3>
+    <button type="button" (click)="addVariant()">Add Variant</button>
+
+    <div *ngFor="let variant of variants.controls; let i = index" [formGroupName]="i">
+      <h4>Variant {{ i + 1 }}</h4>
+      <button type="button" (click)="removeVariant(i)">Remove Variant</button>
+
+      <div formGroupName="title">
+        <label>title en</label>
+        <input formControlName="en" placeholder="enter title (en)" />
+      </div>
+
+      <div formGroupName="title">
+        <label>title ar</label>
+        <input formControlName="ar" placeholder="enter title (ar)" />
+      </div>
+    -->
+
+      <!-- قسم الـ Attributes -->
+       <!--
+
+      <div>
+        <h5>Attributes</h5>
+        <button type="button" (click)="addAttribute(i)">Add Attribute</button>
+        <div *ngFor="let attr of getAttributes(i).controls; let attrIndex = index" [formGroupName]="attrIndex">
+          <input
+            formControlName="key"
+            placeholder="Attribute Key (e.g., color)"
+          />
+          <input
+            formControlName="value"
+            placeholder="Attribute Value (e.g., red)"
+          />
+          <button type="button" (click)="removeAttribute(i, attrIndex)">
+            Remove
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label>price</label>
+        <input type="number" formControlName="price" placeholder="price" />
+      </div>
+
+      <div>
+        <label>discount price</label>
+        <input
+          type="number"
+          formControlName="discountPrice"
+          placeholder="discount price"
+        />
+      </div>
+
+      <div>
+        <label>quantity</label>
+        <input
+          type="number"
+          formControlName="quantity"
+          placeholder="quantity"
+        />
+      </div>
+
+      <div>
+        <label>Main Image</label>
+        <input type="file" (change)="uploadImage($event, 'mainImage', i)" />
+      </div>
+
+      <div>
+        <label>Images</label>
+        <input
+          type="file"
+          multiple
+          (change)="uploadImages($event, 'images', i)"
+        />
+      </div>
+
+      <div>
+        <label>SKU</label>
+        <input formControlName="sku" placeholder="enter SKU" />
+      </div>
+    </div>
+  </div> -->
+
+  <!-- <p-editor formControlName="text" [style]="{ height: '320px' }" /> -->
+
+  <!-- <button type="submit">add new prod</button> -->
+<!-- </form> -->
