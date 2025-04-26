@@ -22,7 +22,7 @@ import { Firestore, doc, updateDoc,deleteDoc } from '@angular/fire/firestore';
 export class UsersComponent implements OnInit {
   users: User[] = [];
   originalUsers: User[] = [];
-  roles: string[] = ['admin', 'customer', 'seller', 'other'];
+  roles: string[] = ['admin', 'customer', 'vendor', 'other'];
 
   constructor(private userService: UserService, private firestore: Firestore) {}
 
@@ -32,7 +32,7 @@ export class UsersComponent implements OnInit {
       this.originalUsers = JSON.parse(JSON.stringify(data));
 
       this.users.forEach(user => {
-        if (!user.fullName) {
+        if (!user.name) {
           console.warn(`User with ID: ${user.userId} is missing fullName`);
         }
       });
@@ -49,7 +49,7 @@ export class UsersComponent implements OnInit {
       
   
       if (!current.userId) continue;
-      if (!current.fullName) {
+      if (!current.name) {
         console.warn(`Full name is missing for user with ID: ${current.userId}`);
       }
   
@@ -58,12 +58,12 @@ export class UsersComponent implements OnInit {
         console.log('Current User:', current);
         const updatePromise = updateDoc(userRef, { role: current.role })
           .then(() => {
-            const userName = current.fullName || 'Unknown User';
+            const userName = current.name || 'Unknown User';
             console.log(`Role updated for ${userName}`);
             this.originalUsers[i].role = current.role;
           })
           .catch((error) => {
-            console.error(`Error updating role for ${current.fullName}:`, error);
+            console.error(`Error updating role for ${current.name}:`, error);
           });
   
         promises.push(updatePromise);
@@ -81,29 +81,29 @@ export class UsersComponent implements OnInit {
     }
 
 
-    // deleteSelectedUsers() {
-    //   const promises = this.users
-    //     .filter(user => user.selected) 
-    //     .map(user => {
-    //       const userRef = doc(this.firestore, `Users/${user.userId}`);
-    //       return deleteDoc(userRef)
-    //         .then(() => {
-    //           console.log(`User ${user.name} deleted successfully`);
-    //         })
-    //         .catch(error => {
-    //           console.error(`Error deleting user ${user.name}:`, error);
-    //         });
-    //     });
-  
-    //   Promise.all(promises)
-    //     .then(() => {
-         
-    //       this.users = this.users.filter(user => !user.selected);
-    //       console.log('Selected users deleted successfully');
-    //     })
-    //     .catch(error => {
-    //       console.error('Error deleting some users:', error);
-    //     });
-    // }
+//     deleteSelectedUsers() {
+//   const promises = this.users
+//     .filter(user => user.selected) 
+//     .map(user => {
+//       const userRef = doc(this.firestore, `Users/${user.userId}`);
+//       return deleteDoc(userRef)
+//         .then(() => {
+//           console.log(`User ${user.name || 'Unknown User'} deleted successfully`);
+//         })
+//         .catch(error => {
+//           console.error(`Error deleting user ${user.name || 'Unknown User'}:`, error);
+//         });
+//     });
+
+//   Promise.all(promises)
+//     .then(() => {
+//       this.users = this.users.filter(user => !user.selected);
+//       console.log('Selected users deleted successfully');
+//     })
+//     .catch(error => {
+//       console.error('Error deleting some users:', error);
+//     });
+// }
+
   } 
   
