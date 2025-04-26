@@ -1,7 +1,7 @@
 
 export interface User {
     userId: string;
-    fullName: string;
+    name: string;
     email: string;
     phone: string;
     role: 'customer' | 'main admin' | 'shop manager' | 'vendor';
@@ -14,4 +14,5 @@ export interface User {
     }[];
     createdAt: Date;
     updatedAt: Date;
+    selected?: boolean; // ✅ أهي موجودة
   }

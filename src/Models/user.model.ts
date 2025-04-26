@@ -1,6 +1,6 @@
 export interface User {
   userId: string;
-  name: string; 
+  fullName: string; 
   email: string;
   phone: string;
   role: 'customer' | 'main admin' | 'shop manager' | 'vendor';
@@ -13,5 +13,5 @@ export interface User {
   }[];
   createdAt: Date;
   updatedAt: Date;
-  selected?: boolean; 
+  
 }

@@ -32,11 +32,5 @@ export class UserService {
     return collectionData(usersRef, { idField: 'userId' }) as Observable<User[]>;
   }
 
-  async saveChanges(users: User[]): Promise<void> {
-    const promises = users.map(user => {
-      const userRef = doc(this.firestore, `Users/${user.userId}`);
-      return updateDoc(userRef, { role: user.role });
-    });
-    await Promise.all(promises);
-  }
+
 }

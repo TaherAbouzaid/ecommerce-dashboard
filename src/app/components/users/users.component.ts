@@ -40,6 +40,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  
   saveChanges() {
     const promises = [];
   
@@ -65,45 +66,34 @@ export class UsersComponent implements OnInit {
           .catch((error) => {
             console.error(`Error updating role for ${current.name}:`, error);
           });
-  
-        promises.push(updatePromise);
       }
     }
-  
-    Promise.all(promises)
-      .then(() => {
-        console.log('All roles updated successfully');
-      })
-      .catch((error) => {
-        console.error('Error updating some roles:', error);
-      });
-   
+     
     }
 
+    deleteSelectedUsers() {
+  const promises = this.users
+    .filter(user => user.selected) 
+    .map(user => {
+      const userRef = doc(this.firestore, `Users/${user.userId}`);
+      return deleteDoc(userRef)
+        .then(() => {
+          console.log(`User ${user.name || 'Unknown User'} deleted successfully`);
+        })
+        .catch(error => {
+          console.error(`Error deleting user ${user.name || 'Unknown User'}:`, error);
+        });
+    });
 
-//     deleteSelectedUsers() {
-//   const promises = this.users
-//     .filter(user => user.selected) 
-//     .map(user => {
-//       const userRef = doc(this.firestore, `Users/${user.userId}`);
-//       return deleteDoc(userRef)
-//         .then(() => {
-//           console.log(`User ${user.name || 'Unknown User'} deleted successfully`);
-//         })
-//         .catch(error => {
-//           console.error(`Error deleting user ${user.name || 'Unknown User'}:`, error);
-//         });
-//     });
-
-//   Promise.all(promises)
-//     .then(() => {
-//       this.users = this.users.filter(user => !user.selected);
-//       console.log('Selected users deleted successfully');
-//     })
-//     .catch(error => {
-//       console.error('Error deleting some users:', error);
-//     });
-// }
+  Promise.all(promises)
+    .then(() => {
+      this.users = this.users.filter(user => !user.selected);
+      console.log('Selected users deleted successfully');
+    })
+    .catch(error => {
+      console.error('Error deleting some users:', error);
+    });
+}
 
   } 
   
