@@ -37,12 +37,12 @@ export class ProductService {
     return collectionData(productsCollection, { idField: 'id' }) as Observable<Product[]>;
   }
 
-<<<<<<< HEAD
+// <<<<<<< HEAD
 
 
-  // جلب الـ variants لمنتج معين
-=======
->>>>>>> f7bb7ec3709f97e03f249ca619c74ba63abf57cc
+//   // جلب الـ variants لمنتج معين
+// =======
+// >>>>>>> f7bb7ec3709f97e03f249ca619c74ba63abf57cc
   getVariants(productId: string): Observable<Variant[]> {
     const variantsCollection = firestoreCollection(this.firestore, `products/${productId}/variants`);
     return collectionData(variantsCollection, { idField: 'id' }) as Observable<Variant[]>;
