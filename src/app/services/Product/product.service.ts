@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, doc, collection as firestoreCollection } from '@angular/fire/firestore';
+import { Firestore, collection, updateDoc,deleteDoc,addDoc,getDoc ,getDocs , collectionData, doc, collection as firestoreCollection, serverTimestamp, DocumentData } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Product, Variant } from '../../models/products';
 
 @Injectable({
@@ -19,6 +20,7 @@ export class ProductService {
 
 
   async addProduct(product: Product, variants: Variant[]) {
+    try{
     const productsCollection = collection(this.firestore, 'products');
     const docRef = await addDoc(productsCollection, product);
 
@@ -31,20 +33,84 @@ export class ProductService {
 
     return docRef.id;
   }
+catch (error: unknown) {
+  console.error('Error adding product:', error);
+  throw error;
+}}
+
 
   getProducts(): Observable<Product[]> {
     const productsCollection = collection(this.firestore, 'products');
     return collectionData(productsCollection, { idField: 'id' }) as Observable<Product[]>;
   }
 
-// <<<<<<< HEAD
 
-
-//   // جلب الـ variants لمنتج معين
-// =======
-// >>>>>>> f7bb7ec3709f97e03f249ca619c74ba63abf57cc
   getVariants(productId: string): Observable<Variant[]> {
     const variantsCollection = firestoreCollection(this.firestore, `products/${productId}/variants`);
     return collectionData(variantsCollection, { idField: 'id' }) as Observable<Variant[]>;
   }
+
+
+  //get product by id
+  async getProductById(productId: string): Promise<Product | undefined> {
+    const productDoc = doc(this.firestore, `products/${productId}`);
+    const productSnap = await getDoc(productDoc);
+    if (productSnap.exists()) {
+      return { id: productSnap.id, ...productSnap.data() } as Product;
+    }
+    return undefined;
+  }
+
+
+  //update product
+   updateProduct(productId: string, updatedData: Partial<Product>): Promise<void> {
+    try{
+    const productDoc = doc(this.firestore, `products/${productId}`);
+    // await updateDoc(productDoc, updatedData);
+    return updateDoc(productDoc,{
+      ...updatedData,
+      updatedAt:serverTimestamp()
+    })
+    }
+    catch (error: unknown) {
+      console.error('Error updating product:', error);
+      throw error;
+    }
+  }
+
+  //delete product
+  async deleteProduct(productId: string): Promise<void> {
+    try {
+      // Delete the variants if they exist
+      const variantsCollection = firestoreCollection(this.firestore, `products/${productId}/variants`);
+      const variantsSnapshot = await getDocs(variantsCollection);
+        for (const docSnap of variantsSnapshot.docs) {
+          await deleteDoc(docSnap.ref);
+        }
+
+      //  delete the product
+      const productDoc = doc(this.firestore, `products/${productId}`);
+      await deleteDoc(productDoc);
+    } catch (error: unknown) {
+      console.error('Error deleting product:', error);
+      throw error;
+    }
+  }
+
+  getProductsAfterSearch(searchTerm: string): Observable<Product[]> {
+    const productsCollection = collection(this.firestore, 'products');
+    return collectionData(productsCollection, { idField: 'id' }).pipe(
+      map((documents: DocumentData[]) => {
+        const products = documents.map(doc => doc as Product);
+        return products.filter(product => product.title.en.toLowerCase().includes(searchTerm.toLowerCase()));
+      })
+    );
+  }
+
+
+
 }
+
+
+
+

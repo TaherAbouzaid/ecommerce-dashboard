@@ -5,6 +5,7 @@ import { MainComponent } from './components/main/main.component';
 import { TestComponent } from './components/Test/Test.component';
 import { UsersComponent } from './components/users/users.component';
 import { AddCategoryComponent } from './components/add-category/add-category.component';
+import { UpdateProductComponent } from './components/update-product/update-product.component';
 
 export const routes: Routes = [
   {
@@ -14,6 +15,7 @@ export const routes: Routes = [
       { path: 'test', component: TestComponent },
       { path: 'users', component: UsersComponent },
       { path: 'add-category', component: AddCategoryComponent },
+      { path:"update-product/:id", component: UpdateProductComponent },
 
     ]
   }

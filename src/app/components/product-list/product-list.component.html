@@ -1,10 +1,35 @@
+<div [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%'}">
+
+  <p-text class="text-2xl font-bold text-center" [ngStyle]="{'color': 'black'}">Product List</p-text>
+  <div class="card flex justify-center">
+    <p-breadcrumb class="max-w-full" [model]="items">
+        <ng-template #item let-item>
+            <ng-container *ngIf="item.route; else elseBlock">
+                <a [routerLink]="item.route" class="p-breadcrumb-item-link">
+                    <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                    <span class="text-primary font-semibold">{{ item.label }}</span>
+                </a>
+            </ng-container>
+            <ng-template #elseBlock>
+                <a [href]="item.url">
+                    <span class="text-color">{{ item.label }}</span>
+                </a>
+            </ng-template>
+        </ng-template>
+    </p-breadcrumb>
+</div>
+
+</div>
+
 <div class="card">
   <p-toast />
   <p-toolbar styleClass="mb-6">
       <ng-template #start>
-          <p-button label="New" icon="pi pi-plus" class="mr-2"  />
-          <p-button severity="danger" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length" />
-      </ng-template>
+          <p-button label="New" icon="pi pi-plus" class="mr-2" (onClick)="createProduct()"  />
+          <!-- <p-button severity="danger" label="Delete" icon="pi pi-trash" outlined
+          (onClick)="deleteSelectedProducts()"
+          [disabled]="!selectedProducts || !selectedProducts.length" />  -->
+       </ng-template>
 
       <ng-template #end>
           <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" auto customUpload class="mr-2 inline-block" [chooseButtonProps]="{ severity: 'secondary' }" />
@@ -29,20 +54,20 @@
       [showCurrentPageReport]="true"
   >
       <ng-template #caption>
-          <div class="flex items-center justify-between">
-              <h5 class="m-0">Manage Products</h5>
+          <div class="flex items-center justify-between " >
+              <!-- <h5 class="m-0">Manage Products</h5> -->
               <p-iconfield>
                   <p-inputicon styleClass="pi pi-search" />
-                  <!-- <input pInputText type="text" (input)="dt.filterGlobal($event.target?.value, 'contains')" placeholder="Search..." /> -->
+                  <input pInputText type="text" (input)="dt.filterGlobal($event.target, 'contains')" placeholder="Search..." />
               </p-iconfield>
           </div>
       </ng-template>
       <ng-template #header>
           <tr>
-              <th style="width: 3rem">
+              <!-- <th style="width: 3rem">
                   <p-tableHeaderCheckbox />
-              </th>
-              <th style="min-width: 16rem">Code</th>
+              </th> -->
+              <!-- <th style="min-width: 16rem">Code</th> -->
               <th pSortableColumn="name" style="min-width:16rem">
                   Name
                   <p-sortIcon field="name" />
@@ -69,11 +94,12 @@
       </ng-template>
       <ng-template pTemplate="body" let-product>
         <tr>
-              <td style="width: 3rem">
+              <!-- <td style="width: 3rem">
                   <p-tableCheckbox [value]="product" />
-              </td>
-              <td style="min-width: 12rem">{{ product.productId }}</td>
-              <td style="min-width: 16rem">{{ product.title }}</td>
+              </td> -->
+
+              <!-- <td style="min-width: 12rem">{{ product.productId }}</td> -->
+              <td style="min-width: 16rem">{{ product.title}}</td>
               <td>
                   <img [src]="product.mainImage" [alt]="product.mainImage" style="width: 64px" class="rounded" />
                   <!-- <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.mainImage" [alt]="product.mainImage" style="width: 64px" class="rounded" /> -->
@@ -85,15 +111,15 @@
                   <p-rating [(ngModel)]="product.ratingSummary" [readonly]="true"  />
               </td>
               <td>
-                <p-tag [value]="product.inventoryStatus"  />
-                <!-- <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)" /> -->
+                <!-- <p-tag [value]="product.quantity"  /> -->
+                <p-tag [value]="getStatus(product.quantity)" [severity]="getSeverity(product.quantity)" />
 
 
               </td>
               <td>
-                  <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editProduct(product)" />
-                  <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"  />
-                  <!-- <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteProduct(product)" /> -->
+                  <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editProduct(product.id)" />
+                  <!-- <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"  /> -->
+                  <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteProduct(product.id)" />
 
               </td>
           </tr>
@@ -172,6 +198,7 @@
 
   <p-confirmDialog [style]="{ width: '450px' }" />
 </div>
+
 
 
 
