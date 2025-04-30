@@ -1,5 +1,5 @@
 
-<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
 
   <div class=" grid " >
 
@@ -7,7 +7,7 @@
     <p-toast></p-toast>
     <div  class="lg:col-12" [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
       <div>
-        <h1>Add Product</h1>
+        <h1>Edit Product</h1>
         <div class="card flex justify-center">
           <p-breadcrumb class="max-w-full" [model]="items">
               <ng-template #item let-item>
@@ -27,7 +27,7 @@
       </div>
 
       </div>
-      <p-button label="Add Product" severity="success" type="submit" [disabled]="productForm.invalid" pRipple  />
+      <button pButton label="update Product" severity="success" type="submit" pRipple></button>
       <!-- <p-button type="button" pRipple (click)="showSuccess()" label="Success" severity="success" /> -->
 
     </div>
@@ -42,15 +42,15 @@
     <div>
      <!-- product Name  -->
     <h5 style="padding: 10px;">Product Name</h5>
-    <div class="grid card flex flex-wrap justify-between items-end gap-8" >
-     <div style="flex: 1;" formGroupName="title">
+    <div class="grid card flex flex-wrap justify-between items-end gap-8"  formGroupName="title" >
+     <div style="flex: 1;">
       <p-floatlabel variant="in">
         <input pInputText id="pName-EN" formControlName="en" style="width: 100%;" />
         <label for="pName-EN">Product Name (EN)</label>
       </p-floatlabel>
      </div>
 
-     <div style="flex: 1;" formGroupName="title">
+     <div style="flex: 1;" >
       <p-floatlabel variant="in">
       <input pInputText id="pName-ar" formControlName="ar" style="width: 100%;"  />
       <label for="pName-ar">Product Name (AR)</label>
@@ -121,7 +121,7 @@
     </div>
 
    <!-- قسم الـ Variants (يظهر فقط لو productType = variant) -->
-   <div class="grid gap-4 " style="padding: 20px;" *ngIf="productForm.get('productType')?.value === 'variant'">
+   <div class="grid gap-4 " style="padding: 20px;" *ngIf="updateForm.get('productType')?.value === 'variant'">
     <h4>Variants</h4>
     <p-button label="Add Variant" [rounded]="true" severity="success" (click)="addVariant()"/>
        <!-- var card -->

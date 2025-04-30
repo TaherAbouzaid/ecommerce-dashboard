@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/Product/product.service';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Product, Variant } from '../../models/products';
 import { Timestamp } from '@angular/fire/firestore';
@@ -23,18 +24,9 @@ import { MenuItem } from 'primeng/api';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-
-
-
-// import { InputNumberModule } from 'primeng/inputnumber';
-
-
-
-
 @Component({
-  selector: 'app-add-product',
-  standalone: true,
-  imports: [ReactiveFormsModule,
+  selector: 'app-update-product',
+  imports:  [ReactiveFormsModule,
     ToastModule,
      ButtonModule,
     CommonModule,
@@ -52,22 +44,27 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
      Breadcrumb,
     RouterModule
     ],
-     providers: [MessageService],
+    providers: [MessageService],
 
-  templateUrl: './add-product.component.html',
+  templateUrl: './update-product.component.html',
+  styleUrl: './update-product.component.css'
 })
-export class AddProductComponent implements OnInit {
-  productForm: FormGroup;
-
-
+export class UpdateProductComponent implements OnInit {
+  updateForm: FormGroup;
+  productId!: string;
 
   constructor(
     private fb: FormBuilder,
-     private productService: ProductService,
-      private messageService: MessageService
-    ) {
-    this.productForm = this.fb.group({
-      productType: ['simple'],
+    private route: ActivatedRoute,
+    private router: Router,
+    private productService: ProductService,
+    private messageService: MessageService
+
+  ) {
+    this.updateForm = this.fb.group({
+      productType: ['', Validators.required],
+      price: ['', Validators.required],
+      imageUrl: [''],
       title: this.fb.group({
         en: ['', Validators.required],
         ar: ['', Validators.required],
@@ -77,9 +74,8 @@ export class AddProductComponent implements OnInit {
         en: [''],
         ar: [''],
       }),
-      price: [1],
       discountPrice: [null],
-      quantity: [1],
+      quantity: [],
       sku: [''],
       brandId: [''],
       categoryId: [''],
@@ -89,36 +85,97 @@ export class AddProductComponent implements OnInit {
       tags: [[]],
       vendorId: [''],
       ratingSummary: this.fb.group({
-        average: [0],
-        count: [0],
+        average: [],
+        count: [],
       }),
-      views: [0],
-      soldCount: [0],
-      wishlistCount: [0],
-      trendingScore: [0],
-      cartAdds: [0],
+      views: [],
+      soldCount: [],
+      wishlistCount: [],
+      trendingScore: [],
+      cartAdds: [],
       variants: this.fb.array([]),
       createdAt: [Timestamp.now()],
-      updatedAt: [Timestamp.now()],
-    });
-
-
+      updatedAt: [Timestamp.now()],    });
   }
 
-  ngOnInit() {
-      this.items = [{ icon: 'pi pi-home', route: '/' }, { label: 'Add Product',route: '/add-product' }];
+  ngOnInit(): void {
+    this.productId = this.route.snapshot.paramMap.get('id')!;
 
+    this.productService.getProductById(this.productId).then(product => {
+      if (!product) return;
 
+      // simplely set the values of the form controls
+      this.updateForm.patchValue({
+        productType: product.productType,
+        price: product.price,
+        // imageUrl: product.imageUrl,
+        discountPrice: product.discountPrice,
+        quantity: product.quantity,
+        sku: product.sku,
+        brandId: product.brandId,
+        categoryId: product.categoryId,
+        subCategoryId: product.subCategoryId,
+        mainImage: product.mainImage,
+        images: product.images || [],
+        tags: product.tags || [],
+        vendorId: product.vendorId,
+        views: product.views || 0,
+        soldCount: product.soldCount || 0,
+        wishlistCount: product.wishlistCount || 0,
+        trendingScore: product.trendingScore || 0,
+        cartAdds: product.cartAdds || 0,
+      });
+
+      // title and description are objects, so we need to set them separately
+      this.updateForm.get('title')?.patchValue(product.title);
+      this.updateForm.get('description')?.patchValue(product.description);
+      this.updateForm.get('ratingSummary')?.patchValue(product.ratingSummary);
+
+      //   variants is an array of objects, so we need to loop through it and create a form group for each variant
+      this.variants.clear();
+      if (product.variants && product.variants.length > 0) {
+        product.variants.forEach(variant => {
+          const variantGroup = this.createVariant();
+          variantGroup.patchValue({
+            price: variant.price,
+            discountPrice: variant.discountPrice,
+            quantity: variant.quantity,
+            mainImage: variant.mainImage,
+            images: variant.images || [],
+            sku: variant.sku,
+          });
+
+          variantGroup.get('title')?.patchValue(variant.title);
+
+          const attrArray = variantGroup.get('attributes') as FormArray;
+          variant.attributes?.['forEach']((attr: { key: string; value: string }) => {
+            attrArray.push(this.fb.group({
+              key: [attr.key],
+              value: [attr.value]
+            }));
+          });
+
+          this.variants.push(variantGroup);
+        });
+      }
+
+    });
+
+    this.items = [
+      { icon: 'pi pi-home', route: '/' },
+      { label: 'Edit Product', route: '/update-product' }
+    ];
   }
 
   items: MenuItem[] | undefined;
 
   home: MenuItem | undefined;
 
+  //.......
 
 
   get variants(): FormArray {
-    return this.productForm.get('variants') as FormArray;
+    return this.updateForm.get('variants') as FormArray;
   }
 
 
@@ -185,7 +242,7 @@ export class AddProductComponent implements OnInit {
         const variant = this.variants.at(variantIndex) as FormGroup;
         variant.get(controlName)?.setValue(url);
       } else {
-        this.productForm.get(controlName)?.setValue(url);
+        this.updateForm.get(controlName)?.setValue(url);
       }
     }
   }
@@ -207,44 +264,33 @@ export class AddProductComponent implements OnInit {
         const variant = this.variants.at(variantIndex) as FormGroup;
         variant.get(controlName)?.setValue(urls);
       } else {
-        this.productForm.get(controlName)?.setValue(urls);
+        this.updateForm.get(controlName)?.setValue(urls);
       }
     }
   }
-
-  onSubmit() {
-    const productData = this.productForm.value;
-    const variantsData = productData.variants;
-
-
-    const variants = variantsData.map((variant: any) => {
-      const attributesObj: { [key: string]: any } = {};
-      variant.attributes.forEach((attr: any) => {
-        attributesObj[attr.key] = attr.value;
-      });
-      variant.attributes = attributesObj;
-      return variant;
-    });
+//..............................
+  async onSubmit() {
+    if (this.updateForm.invalid) return;
+    console.log('Submitting:', this.updateForm.value);
 
 
-    delete productData.variants;
+    try {
+    const updatedData: Partial<Product> = this.updateForm.value;
+    await this.productService.updateProduct(this.productId, updatedData);
+    console.log('Product updated successfully');
+    this.showSuccess();
 
-
-    if (typeof productData.tags === 'string') {
-      productData.tags = productData.tags.split(',').map((tag: string) => tag.trim());
+    setTimeout(() => {
+      this.router.navigate(['/products']);
+    }, 1000);
     }
-
-    this.productService.addProduct(productData as Product, variants as Variant[]).then(() => {
-      console.log('Done');
-      this.productForm.reset();
-      this.showSuccess();
-
-    }).catch(error => {
-      console.error('Error adding product:', error);
-    });
-
+    catch (error) {
+      console.error('Error updating product:', error);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update product' });
+    }
   }
+
   showSuccess() {
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product add succesfuly' });
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product updated succesfuly' });
 };
 }
