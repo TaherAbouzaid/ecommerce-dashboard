@@ -81,14 +81,14 @@ catch (error: unknown) {
   //delete product
   async deleteProduct(productId: string): Promise<void> {
     try {
-      // Delete the variants if they exist
+      //   1- Delete the variants if they exist
       const variantsCollection = firestoreCollection(this.firestore, `products/${productId}/variants`);
       const variantsSnapshot = await getDocs(variantsCollection);
         for (const docSnap of variantsSnapshot.docs) {
           await deleteDoc(docSnap.ref);
         }
 
-      //  delete the product
+      //    2- delete the product
       const productDoc = doc(this.firestore, `products/${productId}`);
       await deleteDoc(productDoc);
     } catch (error: unknown) {

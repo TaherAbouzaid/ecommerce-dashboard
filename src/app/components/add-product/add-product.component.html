@@ -7,7 +7,7 @@
     <p-toast></p-toast>
     <div  class="lg:col-12" [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
       <div>
-        <h1>Add Product</h1>
+        <p-text class="text-2xl font-bold text-center" [ngStyle]="{'color': 'black'}">Add New Product</p-text>
         <div class="card flex justify-center">
           <p-breadcrumb class="max-w-full" [model]="items">
               <ng-template #item let-item>
@@ -28,7 +28,6 @@
 
       </div>
       <p-button label="Add Product" severity="success" type="submit" [disabled]="productForm.invalid" pRipple  />
-      <!-- <p-button type="button" pRipple (click)="showSuccess()" label="Success" severity="success" /> -->
 
     </div>
 
@@ -37,7 +36,7 @@
 
       <!-- genral info -->
    <div [ngStyle]="{'background-color': 'white', 'border-radius': '10px','padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-    <h2 style="padding: 20px;">General Information</h2>
+    <h2 style="padding: 20px; font-size:xx-large; font-weight: 600; color: firebrick;">General Information</h2>
 
     <div>
      <!-- product Name  -->
@@ -80,7 +79,7 @@
    <!-- Price & quantity -->
 
   <div [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-    <h2 style="padding: 20px;">Price & Quantity</h2>
+    <h2 style="padding: 20px; font-size:xx-large; font-weight: 600; color: firebrick;">Price & Quantity</h2>
     <p-fluid class=" flex flex-wrap gap-4 " style="padding-top: 10px;">
       <div class="flex-auto">
         <p-floatlabel variant="on" style="flex: 1;">
@@ -110,7 +109,7 @@
   <!-- Product variant -->
      <!-- product type -->
 <div [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding':'20px','margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-    <h2 style="padding: 20px;">Product Variants</h2>
+    <h2 style="padding: 20px; font-size:xx-large; font-weight: 600; color: firebrick;">Product Variants</h2>
 
     <div style="padding: 20px;">
       <label style="padding: 10px;">Product Type</label>
@@ -201,9 +200,7 @@
 
 
        <div style="padding: 10px;">
-        <!-- <button type="button" (click)="addAttribute(i)">Add Attribute</button> -->
          <div style="padding: 10px; align-items: center;" >
-           <!-- <p-button label="Add ttribute" variant="text" severity="info" (click)="addAttribute(i)" /> -->
            <p-button label="Add Attribute" [raised]="true" severity="info" (click)="addAttribute(i)" />
          </div>
 
@@ -224,7 +221,6 @@
             </div>
             <div class="flex-auto">
               <p-button icon="pi pi-trash" label="Delete" severity="danger" size="small" (click)="removeAttribute(i, attrIndex)"/>
-              <!-- <p-button label="Delete" icon="pi pi-trash" /> -->
 
             </div>
           </div>
@@ -251,26 +247,58 @@
       'padding':'20px',
       'margin-top': '10px',
       'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-     <h2 style="padding: 20px;">Product Media</h2>
-         <div class="grid card flex flex-wrap justify-between items-end gap-3" >
-          <div>
-            <label>Main Image : </label>
-            <input type="file" (change)="uploadImage($event, 'mainImage')" />
-          </div>
-          <div>
+    <h2 style="padding: 20px; font-size:xx-large; font-weight: 600; color: firebrick;">Product Media</h2>
+    <div class="grid card flex flex-col flex-wrap justify-between items-center gap-3" >
+
+       <!-- Main Image -->
+      <div style="width: 100%;">
+      <p style="font-weight: 300; font-size: larger; color: darkgreen;">Main Image</p>
+      <div class="flex items-center justify-center w-full">
+       <label for="mainImage" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        >
+       <div class="flex flex-col items-center justify-center pt-5 pb-6"
+       style="display: flex; flex-direction: column; flex-wrap: wrap; align-items: center; justify-content: center; padding: 20px; margin:auto; width: 100%;"
+        >
+          <svg class="w-4 h-4 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+          </svg>
+          <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+       </div>
+       <input id="mainImage" type="file" (change)="uploadImage($event, 'mainImage')"  class="hidden" />
+      </label>
+      </div>
+    </div>
+
+    <!-- other image -->
+           <div style="width: 100%;" >
+            <p style="font-weight: 300; font-size: larger; color: darkgreen;">other Images</p>
+            <div class="flex items-center justify-center w-full">
+             <label for="Images" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+              >
+             <div class="flex flex-col items-center justify-center pt-5 pb-6"
+             style="display: flex; flex-direction: column; flex-wrap: wrap; align-items: center; justify-content: center; padding: 20px; margin:auto; width: 100%;"
+              >
+                <svg class="w-4 h-4 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                </svg>
+                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+             </div>
+             <input id="Images" type="file" multiple (change)="uploadImages($event, 'images')"  class="hidden" />
+            </label>
+            </div>
+
+
+                </div>
+          <!-- <div>
+
+
 
             <label>Images : </label>
             <input type="file" multiple (change)="uploadImages($event, 'images')" />
-          </div>
-      </div>
-
-
-
-
-
-
-
-
+          </div> -->
+        </div>
     </div>
 
 
@@ -281,35 +309,34 @@
   'padding':'20px',
   'margin-top': '10px',
   'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-    <h2 style="padding: 20px;">Product Category</h2>
-    <div class="card flex flex-wrap justify-between items-end gap-2" >
-     <div class="flex-auto">
+    <h2 style="padding: 20px; font-size:xx-large; font-weight: 600; color: firebrick;">Product Category</h2>
+    <div class="card gap-2" >
+
+      <!-- catagoty -->
+     <div>
       <p-floatlabel variant="in">
-      <input pInputText id="categoryId" formControlName="categoryId" style="width: 100%;" />
+      <input pInputText id="categoryId" formControlName="categoryId" style="width: 100%; margin-bottom: 20px;" />
       <label for="categoryId">Category Id </label>
       </p-floatlabel>
      </div>
-
-     <div class="flex-auto">
+      <!--Sub catagory -->
+     <div>
       <p-floatlabel variant="in">
       <input pInputText id="subCategoryId" formControlName="subCategoryId"  style="width: 100%;" />
       <label for="subCategoryId">SubCategory Id </label>
       </p-floatlabel>
      </div>
 
-     <div class="flex-auto">
-      <p-floatlabel variant="in">
-        <input pInputText id="brandId" formControlName="brandId" style="width: 100%;" />
-        <label for="brandId">Brand Id </label>
-      </p-floatlabel>
+          <!-- Brand -->
+     <div style="margin-top: 20px;" >
+      <p-floatlabel  variant="in">
+        <p-select formControlName="brandId" inputId="brand" [options]="brands" optionLabel="name.en" value="brandId" styleClass="w-full " variant="filled" />
+        <label for="in_label">Brand</label>
+    </p-floatlabel>
+
       </div>
 
-     <div class="flex-auto">
-      <p-floatlabel variant="in">
-        <input pInputText id="vendorId" formControlName="vendorId" style="width: 100%;" />
-        <label for="vendorId">vendor Id </label>
-      </p-floatlabel>
-      </div>
+
 
 
 
@@ -328,7 +355,7 @@
   'padding':'20px',
   'margin-top': '10px',
   'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)'}">
-    <h2 style="padding: 20px;">Product Tags</h2>
+    <h2 style="padding: 20px; font-size:xx-large; font-weight: 600; color: firebrick;">Product Tags</h2>
     <div class="card flex flex-wrap justify-between items-end gap-2" >
       <div class="flex-auto">
         <p-floatlabel variant="in">

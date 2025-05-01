@@ -1,3 +1,5 @@
+import { BrandService } from './../../services/brand/brand.service';
+import { Brand } from './../../models/brands';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/Product/product.service';
@@ -23,6 +25,8 @@ import { MenuItem } from 'primeng/api';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { Select, SelectModule } from 'primeng/select';
+
 
 
 
@@ -50,21 +54,27 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
      Toast,
      Ripple,
      Breadcrumb,
-    RouterModule
+    RouterModule,
+    Select,
+    SelectModule,
     ],
-     providers: [MessageService],
+  providers: [MessageService,BrandService],
 
   templateUrl: './add-product.component.html',
 })
 export class AddProductComponent implements OnInit {
   productForm: FormGroup;
+  brands: Brand[] = [];
+
 
 
 
   constructor(
     private fb: FormBuilder,
-     private productService: ProductService,
-      private messageService: MessageService
+    private productService: ProductService,
+    private messageService: MessageService,
+    private brandService: BrandService,
+
     ) {
     this.productForm = this.fb.group({
       productType: ['simple'],
@@ -106,7 +116,11 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit() {
-      this.items = [{ icon: 'pi pi-home', route: '/' }, { label: 'Add Product',route: '/add-product' }];
+      this.items = [
+        { icon: 'pi pi-home', route: '/' },
+        { label: 'Add Product',route: '/add-product' }
+        ];
+        this.getBrands()
 
 
   }
@@ -247,4 +261,27 @@ export class AddProductComponent implements OnInit {
   showSuccess() {
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product add succesfuly' });
 };
+
+
+getBrands(): void {
+  this.brandService.getBrands().subscribe((brands) => {
+    this.brands = brands;
+    console.log(this.brands);
+
+  });
+}
+
+
+    onBrandChange(event: any) {
+
+      this.productForm.patchValue({ brandId: event.value });
+      this.productForm.get('brandId')?.setValue(event.value);
+
+      console.log('Selected brand:', event.value);
+    }
+
+
+
+
+
 }

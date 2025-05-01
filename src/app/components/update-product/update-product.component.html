@@ -7,7 +7,7 @@
     <p-toast></p-toast>
     <div  class="lg:col-12" [ngStyle]="{'background-color': 'white', 'border-radius': '10px', 'padding': '20px', 'margin': '10px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)', 'width': '100%','display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between'}">
       <div>
-        <h1>Edit Product</h1>
+        <p-text class="text-2xl font-bold text-center" [ngStyle]="{'color': 'black'}">Product Update</p-text>
         <div class="card flex justify-center">
           <p-breadcrumb class="max-w-full" [model]="items">
               <ng-template #item let-item>
@@ -27,8 +27,9 @@
       </div>
 
       </div>
-      <button pButton label="update Product" severity="success" type="submit" pRipple></button>
-      <!-- <p-button type="button" pRipple (click)="showSuccess()" label="Success" severity="success" /> -->
+      <p-button label="Update Product" severity="success" type="submit" [disabled]="updateForm.invalid" pRipple  />
+
+
 
     </div>
 
@@ -348,10 +349,7 @@
 </form>
 
 
- <!-- <div>
-    <label>Tags (comma separated)</label>
-    <input formControlName="tags" placeholder="enter tags (e.g., tag1,tag2)" />
-  </div> -->
+
 
 
 

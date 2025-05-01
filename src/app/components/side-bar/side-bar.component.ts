@@ -45,7 +45,7 @@ export class SideBarComponent implements OnInit {
     label: 'Brands',
     icon: 'pi pi-tag',
     items: [
-      { label: 'All Brands', icon: 'pi pi-list', routerLink: ['/brands'] },
+      { label: 'All Brands', icon: 'pi pi-list', routerLink: ['/brand'] },
       { label: 'Add Brand', icon: 'pi pi-plus', routerLink: ['/add-brand'] }
     ]
   },

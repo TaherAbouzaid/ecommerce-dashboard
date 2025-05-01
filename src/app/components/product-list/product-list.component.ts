@@ -5,10 +5,8 @@ import { CommonModule } from '@angular/common';
 
 
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-// import { Product } from '@/domain/product';
 import { TableModule } from 'primeng/table';
 import { Dialog } from 'primeng/dialog';
-import { Ripple } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
