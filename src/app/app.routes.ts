@@ -7,6 +7,7 @@ import { UsersComponent } from './components/users/users.component';
 import { AddCategoryComponent } from './components/add-category/add-category.component';
 import { PostListComponent } from './components/post-list/post-list.component';
 import { CommentListComponent } from './components/comment-list/comment-list.component';
+import { AddPostComponent } from './components/add-post/add-post.component';
 
 
 export const routes: Routes = [
@@ -18,7 +19,8 @@ export const routes: Routes = [
       { path: 'users', component: UsersComponent },
       { path: 'add-category', component: AddCategoryComponent },
       {path:'list-posts',component:PostListComponent},
-      {path:'comment-list',component:CommentListComponent}
+      {path:'comment-list',component:CommentListComponent},
+      {path:'add-post',component:AddPostComponent}
      
 
     ]

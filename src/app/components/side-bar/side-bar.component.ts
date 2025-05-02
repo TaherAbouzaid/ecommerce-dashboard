@@ -63,9 +63,16 @@ export class SideBarComponent implements OnInit {
     routerLink: ['/reports']
   },
   {
-    label: 'Pages',
+    label:"Posts",
+    items:[
+
+      {label:'Posts',icon:'pi pi-list',routerLink:['/list-posts']},
+      {label:'Add Post',icon:'pi pi-list',routerLink:['/add-post']}
+    ]
+
+    ,
     icon: 'pi pi-file',
-    routerLink: ['/pages']
+    routerLink: ['/list-posts']
   },
   {
     label: 'Messages',

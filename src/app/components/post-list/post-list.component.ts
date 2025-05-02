@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Post } from '../../models/post';
 import { Comment } from '../../models/comment';
@@ -10,8 +10,9 @@ import { ReplyService } from '../../../services/reply.service';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-post-list',
@@ -20,17 +21,26 @@ import { ToastModule } from 'primeng/toast';
   imports: [
     CommonModule,
     CardModule,
-    ButtonModule
+    ButtonModule,
+    InputTextModule,
+    TextareaModule,
+    FormsModule
   ]
 })
 export class PostListComponent implements OnInit {
   postsWithCommentsAndReplies: {
-    post: Post,
+    post: Post;
     comments: {
-      comment: Comment,
-      replies: Reply[]
-    }[]
+      comment: Comment;
+      replies: Reply[];
+    }[];
+    isEditing: boolean;
+    editData: {
+      title: string;
+      content: string;
+    };
   }[] = [];
+
   isLoading: boolean = true;
   errorMessage: string | null = null;
 
@@ -38,7 +48,7 @@ export class PostListComponent implements OnInit {
     private postService: PostService,
     private commentService: CommentService,
     private replyService: ReplyService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadPostsWithCommentsAndReplies();
@@ -50,18 +60,42 @@ export class PostListComponent implements OnInit {
         const postObservables = posts.map(post =>
           this.commentService.getCommentsByPostId(post.postId).pipe(
             switchMap(comments => {
+              if (comments.length === 0) {
+                return of({
+                  post,
+                  comments: [],
+                  isEditing: false,
+                  editData: {
+                    title: post.title,
+                    content: post.content
+                  }
+                });
+              }
+  
               const commentObservables = comments.map(comment =>
                 this.replyService.getRepliesByCommentId(comment.commentId).pipe(
-                  map(replies => ({ comment, replies }))
+                  map(replies => ({
+                    comment,
+                    replies: replies || []
+                  }))
                 )
               );
+  
               return forkJoin(commentObservables).pipe(
-                map(commentsWithReplies => ({ post, comments: commentsWithReplies }))
+                map(commentsWithReplies => ({
+                  post,
+                  comments: commentsWithReplies,
+                  isEditing: false,
+                  editData: {
+                    title: post.title,
+                    content: post.content
+                  }
+                }))
               );
             })
           )
         );
-        return forkJoin(postObservables);
+        return postObservables.length > 0 ? forkJoin(postObservables) : of([]);
       })
     ).subscribe({
       next: postsWithCommentsAndReplies => {
@@ -69,12 +103,43 @@ export class PostListComponent implements OnInit {
         this.isLoading = false;
       },
       error: error => {
-        console.error('Error loading posts:', error);
-        this.errorMessage = 'Failed to load posts. Please try again later.';
+        console.error('❌ Error loading posts:', error);
+        this.errorMessage = 'حدث خطأ أثناء تحميل البوستات.';
         this.isLoading = false;
       }
     });
   }
+  
+
+
+  toggleEdit(postIndex: number): void {
+    const post = this.postsWithCommentsAndReplies[postIndex];
+    post.isEditing = !post.isEditing;
+    if (!post.isEditing) {
+      post.editData = {
+        title: post.post.title,
+        content: post.post.content
+      };
+    }
+  }
+
+  updatePost(postIndex: number): void {
+    const post = this.postsWithCommentsAndReplies[postIndex];
+    const updates = {
+      title: post.editData.title,
+      content: post.editData.content
+    };
+
+    this.postService.updatePost(post.post.postId, updates).subscribe({
+      next: () => {
+        post.post.title = updates.title;
+        post.post.content = updates.content;
+        post.isEditing = false;
+      },
+      error: err => console.error('Error updating post:', err)
+    });
+  }
+
   createPost(): void {
     const newPost: Omit<Post, 'postId' | 'createdAt' | 'updatedAt'> = {
       title: 'عنوان جديد',
@@ -84,7 +149,7 @@ export class PostListComponent implements OnInit {
       likesCount: 0,
       commentIds: []
     };
-  
+
     this.postService.createPost(newPost).subscribe({
       next: post => {
         console.log('Post created:', post);
@@ -93,19 +158,7 @@ export class PostListComponent implements OnInit {
       error: err => console.error('Error creating post:', err)
     });
   }
-  
-  updatePost(postId: string): void {
-    const updates = { title: 'عنوان معدل', content: 'محتوى معدل' };
-  
-    this.postService.updatePost(postId, updates).subscribe({
-      next: () => {
-        console.log('Post updated');
-        this.loadPostsWithCommentsAndReplies();
-      },
-      error: err => console.error('Error updating post:', err)
-    });
-  }
-  
+
   deletePost(postId: string): void {
     this.postService.deletePost(postId).subscribe({
       next: () => {
@@ -115,5 +168,5 @@ export class PostListComponent implements OnInit {
       error: err => console.error('Error deleting post:', err)
     });
   }
-  
 }
+//post-list.component.ts
