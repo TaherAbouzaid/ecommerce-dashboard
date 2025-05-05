@@ -7,6 +7,7 @@ import { UsersComponent } from './components/users/users.component';
 import { AddCategoryComponent } from './components/add-category/add-category.component';
 import { UpdateProductComponent } from './components/update-product/update-product.component';
 import { BrandComponent } from './components/brand/brand.component';
+import { CategoryComponent } from './components/category/category.component';
 
 export const routes: Routes = [
   {
@@ -16,8 +17,10 @@ export const routes: Routes = [
       { path: 'test', component: TestComponent },
       { path: 'users', component: UsersComponent },
       { path: 'add-category', component: AddCategoryComponent },
-      { path:"update-product/:id", component: UpdateProductComponent },
-      { path: 'brand', component:BrandComponent}
+      { path: 'brand', component:BrandComponent},
+      {path: 'categories',component:CategoryComponent},
+      { path: 'products/edit/:id', component: AddProductComponent }
+
 
     ]
   }

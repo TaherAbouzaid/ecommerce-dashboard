@@ -298,19 +298,21 @@
       </p-floatlabel>
      </div>
 
-     <div class="flex-auto">
+     <!-- <div class="flex-auto">
       <p-floatlabel variant="in">
         <input pInputText id="brandId" formControlName="brandId" style="width: 100%;" />
         <label for="brandId">Brand Id </label>
       </p-floatlabel>
-      </div>
+      </div> -->
 
-     <div class="flex-auto">
-      <p-floatlabel variant="in">
-        <input pInputText id="vendorId" formControlName="vendorId" style="width: 100%;" />
-        <label for="vendorId">vendor Id </label>
+      <div style="margin-top: 20px; width: 100%;" >
+        <p-floatlabel  variant="in">
+          <p-select formControlName="brandId" inputId="brand" [options]="brands" optionLabel="name.en" value="brandId" styleClass="w-full " variant="filled" />
+          <label for="in_label">Brand</label>
       </p-floatlabel>
-      </div>
+
+        </div>
+
 
 
 

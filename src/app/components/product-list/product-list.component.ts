@@ -1,3 +1,4 @@
+import { Category } from './../../models/category';
 import { Product } from './../../models/products';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/Product/product.service';
@@ -26,6 +27,7 @@ import { Table } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router, RouterModule } from '@angular/router';
 import { Breadcrumb } from 'primeng/breadcrumb';
+import { CategoryService } from '../../services/category/category.service';
 
 interface Column {
     field: string;
@@ -73,7 +75,7 @@ interface ExportColumn {
        RouterModule
 
         ],
-  providers: [MessageService, ConfirmationService, ProductService],
+  providers: [MessageService, ConfirmationService, ProductService,CategoryService],
   styles: [
     `:host ::ng-deep .p-dialog .product-image {
         width: 150px;
@@ -86,6 +88,8 @@ export class ProductListComponent implements OnInit {
   products: any[] = [];
   productDialog: boolean = false;
   product!: Product;
+  catagory: Category[] = [];
+
 
     selectedProducts!: Product[] | null;
 
@@ -103,13 +107,16 @@ export class ProductListComponent implements OnInit {
 
 
 
+
+
+
   constructor(
     private productService: ProductService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private cd: ChangeDetectorRef,
-    private router: Router
-
+    private router: Router,
+    private categoryService:CategoryService
 
   ) {
 
@@ -124,11 +131,22 @@ export class ProductListComponent implements OnInit {
 ngOnInit() {
 
     this.loadDemoData();
+    console.log(this.loadDemoData)
+
+    this.categoryService.getCategories().subscribe((categories) => {
+    this.catagory = categories;
+    })
+
+
+
     this.items = [
       { icon: 'pi pi-home', route: '/' },
       { label: 'All Product', route: '/products' }
     ];
+
+
   }
+
 
   items: MenuItem[] | undefined;
 
@@ -139,8 +157,9 @@ ngOnInit() {
       this.productService.getProducts().subscribe((data) => {
           console.log('Products:', this.products);
           this.products = data;
+          console.log(data[0].title);
 
-          this.cd.markForCheck();
+          // this.cd.markForCheck();
       });
 
       this.statuses = [
@@ -162,9 +181,17 @@ ngOnInit() {
 
 
 
-editProduct(productId: string): void {
-  this.router.navigate(['/update-product', productId]);
+// editProduct(productId: string): void {
+//   this.router.navigate(['/update-product', productId]);
+// }
+
+
+//...............update.....................
+editProduct(productId: string) {
+  this.router.navigate(['/products/edit', productId]);
 }
+//..................................................
+
 
 // deleteSelectedProducts() {
 //   this.confirmationService.confirm({
@@ -266,6 +293,14 @@ getProductName(product: Product): string {
   return product.title.en || 'Unknown Product';
 }
 
+get productName():string{
+  return this.product.title.en
+
+}
+
+
+
+
 filterGlobal(event: any, stringVal: string) {
   this.dt.filterGlobal((event.target as HTMLInputElement).value, stringVal);
 }
@@ -273,6 +308,36 @@ filterGlobal(event: any, stringVal: string) {
 createProduct(): void {
   this.router.navigate(['/add-product']);
 }
+
+
+
+
+
+getCategoryName(categoryId: string): string {
+  const category = this.catagory?.find(cat => cat.categoryId === categoryId);
+  return category?.name?.en || 'No categories';
+}
+
+
+
+// get catName(catId:string) : string{
+//   const catagory =this.catagory.find((cat)=>{
+//     catagory?.cat===catId})
+//     return catagory ? (catagory.name.en || 'unknown category') : 'unknown category';
+//   }
+
+  // getCategoryName(catId: string): string {
+  //   const category = this.catagory.find((cat) => cat.categoryId === catId);
+  //   return category ? category.name.en : 'Unknown Category';
+  // }
+
+
+
+
+
+
+
+
 
 // SearchProducts(event: any, stringVal: string) {
 //   const searchTerm = event.target.value.toLowerCase();
@@ -284,6 +349,8 @@ createProduct(): void {
 //   }
 //   this.cd.markForCheck(); // Mark for check to update the view
 }
+
+
 
 
 

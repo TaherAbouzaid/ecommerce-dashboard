@@ -89,7 +89,7 @@
                   Status
                   <p-sortIcon field="inventoryStatus" />
               </th>
-              <th style="min-width: 12rem"></th>
+              <th style="min-width: 12rem">Actions</th>
           </tr>
       </ng-template>
       <ng-template pTemplate="body" let-product>
@@ -99,14 +99,15 @@
               </td> -->
 
               <!-- <td style="min-width: 12rem">{{ product.productId }}</td> -->
-              <td style="min-width: 16rem">{{ product.title}}</td>
+              <td style="min-width: 16rem">{{ product?.title?.en || 'No title' }}
+              </td>
               <td>
                   <img [src]="product.mainImage" [alt]="product.mainImage" style="width: 64px" class="rounded" />
                   <!-- <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.mainImage" [alt]="product.mainImage" style="width: 64px" class="rounded" /> -->
 
               </td>
               <td>{{ product.price | currency: 'USD' }}</td>
-              <td>{{ product.categoryId }}</td>
+              <td>{{ getCategoryName(product.categoryId) }}</td>
               <td>
                   <p-rating [(ngModel)]="product.ratingSummary" [readonly]="true"  />
               </td>

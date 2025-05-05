@@ -24,6 +24,9 @@ import { MenuItem } from 'primeng/api';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { BrandService } from '../../services/brand/brand.service';
+import { Brand } from '../../models/brands';
+import { Select, SelectModule } from 'primeng/select';
 @Component({
   selector: 'app-update-product',
   imports:  [ReactiveFormsModule,
@@ -42,23 +45,29 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
      Toast,
      Ripple,
      Breadcrumb,
-    RouterModule
+    RouterModule,
+    Select,
+    SelectModule,
     ],
-    providers: [MessageService],
+    providers: [MessageService,BrandService],
 
   templateUrl: './update-product.component.html',
   styleUrl: './update-product.component.css'
 })
 export class UpdateProductComponent implements OnInit {
+  // brands: any[] = [];
   updateForm: FormGroup;
   productId!: string;
+  brands: Brand[] = [];
+
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private brandService:BrandService
 
   ) {
     this.updateForm = this.fb.group({
@@ -165,6 +174,8 @@ export class UpdateProductComponent implements OnInit {
       { icon: 'pi pi-home', route: '/' },
       { label: 'Edit Product', route: '/update-product' }
     ];
+
+    this.getBrands()
   }
 
   items: MenuItem[] | undefined;
@@ -293,4 +304,13 @@ export class UpdateProductComponent implements OnInit {
   showSuccess() {
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product updated succesfuly' });
 };
+
+
+getBrands(): void {
+  this.brandService.getBrands().subscribe((brands) => {
+    this.brands = brands;
+    console.log(this.brands);
+
+  });
+}
 }
