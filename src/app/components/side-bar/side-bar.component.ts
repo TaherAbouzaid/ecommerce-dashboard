@@ -30,14 +30,16 @@ export class SideBarComponent implements OnInit {
       { label: 'All Products', icon: 'pi pi-list', routerLink: ['/products'] },
       { label: 'Add Product', icon: 'pi pi-plus', routerLink: ['/add-product'] },
       { label: 'Orders', icon: 'pi pi-shopping-cart', routerLink: ['/orders'] },
-      { label: 'Stock', icon: 'pi pi-briefcase', routerLink: ['/stock'] }
+      { label: 'Stock', icon: 'pi pi-briefcase', routerLink: ['/stock'] },
+      
     ]
   },
   {
     label: 'Categories',
     icon: 'pi pi-tags',
     items: [
-      { label: 'All Categories', icon: 'pi pi-list', routerLink: ['/categories'] },
+      {
+        label: 'All Categories', icon: 'pi pi-list', routerLink: ['/category'] },
       { label: 'Add Category', icon: 'pi pi-plus', routerLink: ['/add-category'] }
     ]
   },

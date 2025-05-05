@@ -5,16 +5,15 @@ export interface LocalizedString {
   ar: string;
 }
 
-
 interface RatingSummary {
   average: number;
   count: number;
 }
 
 export interface Variant {
-   id?: string;
+  id?: string;
   title: LocalizedString;
-  attributes: { [key: string]: any };
+  attributes: Array<{ key: string; value: string }> | null;
   price: number | null;
   discountPrice: number | null;
   quantity: number | null;

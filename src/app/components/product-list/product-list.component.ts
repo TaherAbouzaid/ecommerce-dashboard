@@ -43,10 +43,6 @@ interface ExportColumn {
 
 
 
-
-
-
-
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
@@ -133,7 +129,6 @@ ngOnInit() {
   }
 
   items: MenuItem[] | undefined;
-
   home: MenuItem | undefined;
 
 
@@ -193,10 +188,6 @@ hideDialog() {
   this.productDialog = false;
   this.submitted = false;
 }
-
-
-
-
 
 deleteProduct(productId: string): void {
     this.confirmationService.confirm({
