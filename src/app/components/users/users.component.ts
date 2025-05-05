@@ -11,8 +11,6 @@ import { MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 
-
-
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -55,7 +53,6 @@ export class UsersComponent implements OnInit {
   
   saveChanges() {
     const promises = [];
-  
     for (let i = 0; i < this.users.length; i++) {
       const current = this.users[i];
       const original = this.originalUsers[i];
@@ -138,6 +135,5 @@ export class UsersComponent implements OnInit {
     });
   }
   
-
   } 
   
