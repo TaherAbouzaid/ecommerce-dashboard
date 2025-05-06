@@ -24,7 +24,7 @@
     "@primeng/themes": "^19.1.0",
     "@tailwindcss/postcss": "^4.1.4",
     "chart.js": "^4.4.9",
-    "firebase": "^11.6.0",
+    "firebase": "^11.6.1",
     "postcss": "^8.5.3",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",

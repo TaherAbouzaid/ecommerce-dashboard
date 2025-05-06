@@ -8,6 +8,9 @@ import { UsersComponent } from './components/users/users.component';
 // import { UpdateProductComponent } from './components/update-product/update-product.component';
 import { BrandComponent } from './components/brand/brand.component';
 import { CategoryComponent } from './components/category/category.component';
+import { PostListComponent } from './components/post-list/post-list.component';
+import { CommentListComponent } from './components/comment-list/comment-list.component';
+import { AddPostComponent } from './components/add-post/add-post.component';
 
 export const routes: Routes = [
   {
@@ -19,7 +22,12 @@ export const routes: Routes = [
       // { path: 'add-category', component: AddCategoryComponent },
       { path: 'brand', component:BrandComponent},
       {path: 'categories',component:CategoryComponent},
-      { path: 'products/edit/:id', component: AddProductComponent }
+      { path: 'products/edit/:id', component: AddProductComponent },
+
+      // { path: 'add-category', component: AddCategoryComponent },
+      {path:'list-posts',component:PostListComponent},
+      {path:'comment-list',component:CommentListComponent},
+      {path:'add-post',component:AddPostComponent}
 
 
     ]

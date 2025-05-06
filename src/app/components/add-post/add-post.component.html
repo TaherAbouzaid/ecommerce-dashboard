@@ -1,0 +1,47 @@
+<div class="add-post-container">
+    <h2>إنشاء منشور جديد</h2>
+    
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title">العنوان</label>
+        <input 
+          type="text" 
+          id="title" 
+          formControlName="title" 
+          class="form-control"
+          [class.is-invalid]="title?.invalid && (title?.dirty || title?.touched)">
+        
+        <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="invalid-feedback">
+          <div *ngIf="title?.errors?.['required']">العنوان مطلوب</div>
+          <div *ngIf="title?.errors?.['minlength']">يجب أن يكون العنوان على الأقل 5 أحرف</div>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="content">المحتوى</label>
+        <textarea 
+          id="content" 
+          formControlName="content" 
+          rows="8"
+          class="form-control"
+          [class.is-invalid]="content?.invalid && (content?.dirty || content?.touched)"></textarea>
+        
+        <div *ngIf="content?.invalid && (content?.dirty || content?.touched)" class="invalid-feedback">
+          <div *ngIf="content?.errors?.['required']">المحتوى مطلوب</div>
+          <div *ngIf="content?.errors?.['minlength']">يجب أن يكون المحتوى على الأقل 20 حرفًا</div>
+        </div>
+      </div>
+  
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+  
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="postForm.invalid || isLoading">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+        {{ isLoading ? 'جاري الإرسال...' : 'نشر' }}
+      </button>
+    </form>
+  </div>  

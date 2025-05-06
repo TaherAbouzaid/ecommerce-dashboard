@@ -29,9 +29,9 @@
   <ng-template pTemplate="body" let-user>
     <tr class="hover:bg-gray-50 transition duration-300 text-sm text-gray-700">
       <td class="p-3 flex items-center justify-center">
-        <img
-          [src]="user.profileimage || 'assets/default-avatar.png'"
-          alt="User Avatar"
+        <img 
+          [src]="user.profileimage || '../../../assets/favicon.ico'" 
+          alt="User Avatar" 
           class="w-8 h-8 rounded-full object-cover"
         />
       </td>
