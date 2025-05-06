@@ -16,6 +16,9 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
+import { Validators } from '@angular/forms';
+import { Toast } from 'primeng/toast';
+import { Ripple } from 'primeng/ripple';
 import { MessageService } from 'primeng/api';
 import { MenuItem } from 'primeng/api';
 import { Breadcrumb } from 'primeng/breadcrumb';
@@ -36,10 +39,9 @@ import { MessageModule } from 'primeng/message';
 @Component({
   selector: 'app-add-product',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
+  imports: [ReactiveFormsModule,
     ToastModule,
-    ButtonModule,
+     ButtonModule,
     CommonModule,
     FloatLabelModule,
     FieldsetModule,
@@ -245,6 +247,7 @@ existingVariants: Variant[] = [];
     return attributes;
   }
 
+
   createVariant(): FormGroup {
     const variant = this.fb.group({
       title: this.fb.group({
@@ -261,6 +264,7 @@ existingVariants: Variant[] = [];
     }, { validators: this.discountLessThanPriceValidator });
     return variant;
   }
+
 
   createAttribute(): FormGroup {
     const attribute = this.fb.group({
@@ -280,6 +284,7 @@ existingVariants: Variant[] = [];
     this.updateFormValidity();
     this.cdr.markForCheck();
   }
+
 
   removeAttribute(variantIndex: number, attrIndex: number) {
     const attributes = this.getAttributes(variantIndex);
@@ -330,6 +335,9 @@ existingVariants: Variant[] = [];
       this.cdr.markForCheck();
     }
   }
+
+
+
 
   async uploadImages(event: Event, controlName: string, variantIndex?: number) {
     const input = event.target as HTMLInputElement;

@@ -2,6 +2,7 @@ import { Timestamp } from 'firebase/firestore';
 import { LocalizedString } from './products';
 
 export interface Category {
+  id: string;
   categoryId: string;
   name: LocalizedString;
   createdAt: Timestamp;

@@ -107,14 +107,16 @@
 
               </td>
               <td>{{ product.price | currency: 'USD' }}</td>
-              <td>{{ getCategoryName(product.categoryId) }}</td>
+<td>{{ product.categoryId?.name?.en || 'No category' }}</td>
+
+
               <td>
                   <p-rating [(ngModel)]="product.ratingSummary" [readonly]="true"  />
+                  <!-- {{ product.ratingSummary?.average || 0 }} -->
               </td>
               <td>
                 <!-- <p-tag [value]="product.quantity"  /> -->
                 <p-tag [value]="getStatus(product.quantity)" [severity]="getSeverity(product.quantity)" />
-
 
               </td>
               <td>

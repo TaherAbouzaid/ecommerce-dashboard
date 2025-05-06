@@ -84,7 +84,7 @@ export class ProductListComponent implements OnInit {
   products: any[] = [];
   productDialog: boolean = false;
   product!: Product;
-  catagory: Category[] = [];
+  // catagory: Category[] = [];
 
 
     selectedProducts!: Product[] | null;
@@ -98,6 +98,7 @@ export class ProductListComponent implements OnInit {
     cols!: Column[];
 
     exportColumns!: ExportColumn[];
+  firestore: any;
 
 
 
@@ -112,7 +113,7 @@ export class ProductListComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private cd: ChangeDetectorRef,
     private router: Router,
-    private categoryService:CategoryService
+    // private categoryService:CategoryService
 
   ) {
 
@@ -126,12 +127,14 @@ export class ProductListComponent implements OnInit {
 
 ngOnInit() {
 
-    this.loadDemoData();
+  this.loadDemoData();
+    // this.loadCategories();
+
     console.log(this.loadDemoData)
 
-    this.categoryService.getCategories().subscribe((categories) => {
-    this.catagory = categories;
-    })
+    // this.categoryService.getCategories().subscribe((categories) => {
+    // this.catagory = categories;
+    // })
 
 
 
@@ -301,13 +304,18 @@ createProduct(): void {
 }
 
 
+// loadCategories() {
+//   this.firestore.collection('categories').valueChanges({ idField: 'id' }).subscribe((data: Category[]) => {
+//     this.catagory = data;
+//   });
+// }
 
 
+// getCategoryName(categoryId: string): string {
+//   const category = this.catagory.find(cat => cat.id === categoryId);
+//   return category ? category.name?.en : 'No category';
+// }
 
-getCategoryName(categoryId: string): string {
-  const category = this.catagory?.find(cat => cat.categoryId === categoryId);
-  return category?.name?.en || 'No categories';
-}
 
 
 

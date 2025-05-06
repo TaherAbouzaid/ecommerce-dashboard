@@ -69,106 +69,106 @@ export class UpdateProductComponent implements OnInit {
     private messageService: MessageService,
     private brandService:BrandService
 
-//   ) {
-//     this.updateForm = this.fb.group({
-//       productType: ['', Validators.required],
-//       price: ['', Validators.required],
-//       imageUrl: [''],
-//       title: this.fb.group({
-//         en: ['', Validators.required],
-//         ar: ['', Validators.required],
+  ) {
+    this.updateForm = this.fb.group({
+      productType: ['', Validators.required],
+      price: ['', Validators.required],
+      imageUrl: [''],
+      title: this.fb.group({
+        en: ['', Validators.required],
+        ar: ['', Validators.required],
 
-//       }),
-//       description: this.fb.group({
-//         en: [''],
-//         ar: [''],
-//       }),
-//       discountPrice: [null],
-//       quantity: [],
-//       sku: [''],
-//       brandId: [''],
-//       categoryId: [''],
-//       subCategoryId: [''],
-//       mainImage: [''],
-//       images: [[]],
-//       tags: [[]],
-//       vendorId: [''],
-//       ratingSummary: this.fb.group({
-//         average: [],
-//         count: [],
-//       }),
-//       views: [],
-//       soldCount: [],
-//       wishlistCount: [],
-//       trendingScore: [],
-//       cartAdds: [],
-//       variants: this.fb.array([]),
-//       createdAt: [Timestamp.now()],
-//       updatedAt: [Timestamp.now()],    });
-//   }
+      }),
+      description: this.fb.group({
+        en: [''],
+        ar: [''],
+      }),
+      discountPrice: [null],
+      quantity: [],
+      sku: [''],
+      brandId: [''],
+      categoryId: [''],
+      subCategoryId: [''],
+      mainImage: [''],
+      images: [[]],
+      tags: [[]],
+      vendorId: [''],
+      ratingSummary: this.fb.group({
+        average: [],
+        count: [],
+      }),
+      views: [],
+      soldCount: [],
+      wishlistCount: [],
+      trendingScore: [],
+      cartAdds: [],
+      variants: this.fb.array([]),
+      createdAt: [Timestamp.now()],
+      updatedAt: [Timestamp.now()],    });
+  }
 
-//   ngOnInit(): void {
-//     this.productId = this.route.snapshot.paramMap.get('id')!;
+  ngOnInit(): void {
+    this.productId = this.route.snapshot.paramMap.get('id')!;
 
-//     this.productService.getProductById(this.productId).then(product => {
-//       if (!product) return;
+    this.productService.getProductById(this.productId).then(product => {
+      if (!product) return;
 
-//       // simplely set the values of the form controls
-//       this.updateForm.patchValue({
-//         productType: product.productType,
-//         price: product.price,
-//         // imageUrl: product.imageUrl,
-//         discountPrice: product.discountPrice,
-//         quantity: product.quantity,
-//         sku: product.sku,
-//         brandId: product.brandId,
-//         categoryId: product.categoryId,
-//         subCategoryId: product.subCategoryId,
-//         mainImage: product.mainImage,
-//         images: product.images || [],
-//         tags: product.tags || [],
-//         vendorId: product.vendorId,
-//         views: product.views || 0,
-//         soldCount: product.soldCount || 0,
-//         wishlistCount: product.wishlistCount || 0,
-//         trendingScore: product.trendingScore || 0,
-//         cartAdds: product.cartAdds || 0,
-//       });
+      // simplely set the values of the form controls
+      this.updateForm.patchValue({
+        productType: product.productType,
+        price: product.price,
+        // imageUrl: product.imageUrl,
+        discountPrice: product.discountPrice,
+        quantity: product.quantity,
+        sku: product.sku,
+        brandId: product.brandId,
+        categoryId: product.categoryId,
+        subCategoryId: product.subCategoryId,
+        mainImage: product.mainImage,
+        images: product.images || [],
+        tags: product.tags || [],
+        vendorId: product.vendorId,
+        views: product.views || 0,
+        soldCount: product.soldCount || 0,
+        wishlistCount: product.wishlistCount || 0,
+        trendingScore: product.trendingScore || 0,
+        cartAdds: product.cartAdds || 0,
+      });
 
-//       // title and description are objects, so we need to set them separately
-//       this.updateForm.get('title')?.patchValue(product.title);
-//       this.updateForm.get('description')?.patchValue(product.description);
-//       this.updateForm.get('ratingSummary')?.patchValue(product.ratingSummary);
+      // title and description are objects, so we need to set them separately
+      this.updateForm.get('title')?.patchValue(product.title);
+      this.updateForm.get('description')?.patchValue(product.description);
+      this.updateForm.get('ratingSummary')?.patchValue(product.ratingSummary);
 
-//       //   variants is an array of objects, so we need to loop through it and create a form group for each variant
-//       this.variants.clear();
-//       if (product.variants && product.variants.length > 0) {
-//         product.variants.forEach(variant => {
-//           const variantGroup = this.createVariant();
-//           variantGroup.patchValue({
-//             price: variant.price,
-//             discountPrice: variant.discountPrice,
-//             quantity: variant.quantity,
-//             mainImage: variant.mainImage,
-//             images: variant.images || [],
-//             sku: variant.sku,
-//           });
+      //   variants is an array of objects, so we need to loop through it and create a form group for each variant
+      this.variants.clear();
+      if (product.variants && product.variants.length > 0) {
+        product.variants.forEach(variant => {
+          const variantGroup = this.createVariant();
+          variantGroup.patchValue({
+            price: variant.price,
+            discountPrice: variant.discountPrice,
+            quantity: variant.quantity,
+            mainImage: variant.mainImage,
+            images: variant.images || [],
+            sku: variant.sku,
+          });
 
-//           variantGroup.get('title')?.patchValue(variant.title);
+          variantGroup.get('title')?.patchValue(variant.title);
 
-//           const attrArray = variantGroup.get('attributes') as FormArray;
-//           variant.attributes?.['forEach']((attr: { key: string; value: string }) => {
-//             attrArray.push(this.fb.group({
-//               key: [attr.key],
-//               value: [attr.value]
-//             }));
-//           });
+          const attrArray = variantGroup.get('attributes') as FormArray;
+          variant.attributes?.['forEach']((attr: { key: string; value: string }) => {
+            attrArray.push(this.fb.group({
+              key: [attr.key],
+              value: [attr.value]
+            }));
+          });
 
-//           this.variants.push(variantGroup);
-//         });
-//       }
+          this.variants.push(variantGroup);
+        });
+      }
 
-//     });
+    });
 
     this.items = [
       { icon: 'pi pi-home', route: '/' },
@@ -178,128 +178,128 @@ export class UpdateProductComponent implements OnInit {
     this.getBrands()
   }
 
-//   items: MenuItem[] | undefined;
+  items: MenuItem[] | undefined;
 
-//   home: MenuItem | undefined;
+  home: MenuItem | undefined;
 
-//   //.......
-
-
-//   get variants(): FormArray {
-//     return this.updateForm.get('variants') as FormArray;
-//   }
+  //.......
 
 
-//   getAttributes(variantIndex: number): FormArray {
-//     const variant = this.variants.at(variantIndex) as FormGroup;
-//     return variant.get('attributes') as FormArray;
-//   }
+  get variants(): FormArray {
+    return this.updateForm.get('variants') as FormArray;
+  }
 
 
-//   createVariant(): FormGroup {
-//     return this.fb.group({
-//       title: this.fb.group({
-//         en: [''],
-//         ar: [''],
-//       }),
-//       attributes: this.fb.array([]),
-//       price: [null],
-//       discountPrice: [null],
-//       quantity: [null],
-//       mainImage: [''],
-//       images: [[]],
-//       sku: [''],
-//     });
-//   }
+  getAttributes(variantIndex: number): FormArray {
+    const variant = this.variants.at(variantIndex) as FormGroup;
+    return variant.get('attributes') as FormArray;
+  }
 
 
-//   createAttribute(): FormGroup {
-//     return this.fb.group({
-//       key: [''],
-//       value: [''],
-//     });
-//   }
+  createVariant(): FormGroup {
+    return this.fb.group({
+      title: this.fb.group({
+        en: [''],
+        ar: [''],
+      }),
+      attributes: this.fb.array([]),
+      price: [null],
+      discountPrice: [null],
+      quantity: [null],
+      mainImage: [''],
+      images: [[]],
+      sku: [''],
+    });
+  }
 
 
-//   addVariant() {
-//     this.variants.push(this.createVariant());
-//   }
+  createAttribute(): FormGroup {
+    return this.fb.group({
+      key: [''],
+      value: [''],
+    });
+  }
 
 
-//   removeVariant(index: number) {
-//     this.variants.removeAt(index);
-//   }
+  addVariant() {
+    this.variants.push(this.createVariant());
+  }
 
 
-//   addAttribute(variantIndex: number) {
-//     const attributes = this.getAttributes(variantIndex);
-//     attributes.push(this.createAttribute());
-//   }
+  removeVariant(index: number) {
+    this.variants.removeAt(index);
+  }
 
 
-//   removeAttribute(variantIndex: number, attrIndex: number) {
-//     const attributes = this.getAttributes(variantIndex);
-//     attributes.removeAt(attrIndex);
-//   }
+  addAttribute(variantIndex: number) {
+    const attributes = this.getAttributes(variantIndex);
+    attributes.push(this.createAttribute());
+  }
 
 
-//   async uploadImage(event: Event, controlName: string, variantIndex?: number) {
-//     const input = event.target as HTMLInputElement;
-//     if (input.files && input.files.length > 0) {
-//       const file = input.files[0];
-//       const path = `products/${Date.now()}_${file.name}`;
-//       const url = await this.productService.uploadImage(file, path);
-//       if (variantIndex !== undefined) {
-//         const variant = this.variants.at(variantIndex) as FormGroup;
-//         variant.get(controlName)?.setValue(url);
-//       } else {
-//         this.updateForm.get(controlName)?.setValue(url);
-//       }
-//     }
-//   }
+  removeAttribute(variantIndex: number, attrIndex: number) {
+    const attributes = this.getAttributes(variantIndex);
+    attributes.removeAt(attrIndex);
+  }
+
+
+  async uploadImage(event: Event, controlName: string, variantIndex?: number) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const path = `products/${Date.now()}_${file.name}`;
+      const url = await this.productService.uploadImage(file, path);
+      if (variantIndex !== undefined) {
+        const variant = this.variants.at(variantIndex) as FormGroup;
+        variant.get(controlName)?.setValue(url);
+      } else {
+        this.updateForm.get(controlName)?.setValue(url);
+      }
+    }
+  }
 
 
 
 
-//   async uploadImages(event: Event, controlName: string, variantIndex?: number) {
-//     const input = event.target as HTMLInputElement;
-//     if (input.files && input.files.length > 0) {
-//       const files = Array.from(input.files);
-//       const urls = [];
-//       for (const file of files) {
-//         const path = `products/${Date.now()}_${file.name}`;
-//         const url = await this.productService.uploadImage(file, path);
-//         urls.push(url);
-//       }
-//       if (variantIndex !== undefined) {
-//         const variant = this.variants.at(variantIndex) as FormGroup;
-//         variant.get(controlName)?.setValue(urls);
-//       } else {
-//         this.updateForm.get(controlName)?.setValue(urls);
-//       }
-//     }
-//   }
-// //..............................
-//   async onSubmit() {
-//     if (this.updateForm.invalid) return;
-//     console.log('Submitting:', this.updateForm.value);
+  async uploadImages(event: Event, controlName: string, variantIndex?: number) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const files = Array.from(input.files);
+      const urls = [];
+      for (const file of files) {
+        const path = `products/${Date.now()}_${file.name}`;
+        const url = await this.productService.uploadImage(file, path);
+        urls.push(url);
+      }
+      if (variantIndex !== undefined) {
+        const variant = this.variants.at(variantIndex) as FormGroup;
+        variant.get(controlName)?.setValue(urls);
+      } else {
+        this.updateForm.get(controlName)?.setValue(urls);
+      }
+    }
+  }
+//..............................
+  async onSubmit() {
+    if (this.updateForm.invalid) return;
+    console.log('Submitting:', this.updateForm.value);
 
 
-//     try {
-//     const updatedData: Partial<Product> = this.updateForm.value;
-//     await this.productService.updateProduct(this.productId, updatedData);
-//     console.log('Product updated successfully');
-//     this.showSuccess();
+    try {
+    const updatedData: Partial<Product> = this.updateForm.value;
+    await this.productService.updateProduct(this.productId, updatedData);
+    console.log('Product updated successfully');
+    this.showSuccess();
 
-//     setTimeout(() => {
-//       this.router.navigate(['/products']);
-//     }, 1000);
-//     }
-//     catch (error) {
-//       console.error('Error updating product:', error);
-//       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update product' });
-//     }
-//   }
+    setTimeout(() => {
+      this.router.navigate(['/products']);
+    }, 1000);
+    }
+    catch (error) {
+      console.error('Error updating product:', error);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update product' });
+    }
+  }
 
   showSuccess() {
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product updated succesfuly' });
