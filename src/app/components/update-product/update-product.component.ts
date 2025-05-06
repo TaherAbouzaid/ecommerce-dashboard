@@ -1,64 +1,73 @@
-// import { Component, OnInit } from '@angular/core';
-// import { ActivatedRoute, Router } from '@angular/router';
-// import { ProductService } from '../../services/Product/product.service';
-// import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule } from '@angular/forms';
-// import { CommonModule } from '@angular/common';
-// import { Product, Variant } from '../../models/products';
-// import { Timestamp } from '@angular/fire/firestore';
-// import { FloatLabelModule } from 'primeng/floatlabel';
-// import { InputTextModule } from 'primeng/inputtext';
-// import { Editor } from 'primeng/editor';
-// import { InputNumber } from 'primeng/inputnumber';
-// import { Fluid } from 'primeng/fluid';
-// import { FileUpload } from 'primeng/fileupload';
-// import { ToastModule } from 'primeng/toast';
-// import { ButtonModule } from 'primeng/button';
-// import { FileUploadModule } from 'primeng/fileupload';
-// import { DropdownModule } from 'primeng/dropdown';
-// import { FieldsetModule } from 'primeng/fieldset';
-// import { Validators } from '@angular/forms';
-// import { Toast } from 'primeng/toast';
-// import { Ripple } from 'primeng/ripple';
-// import { MessageService } from 'primeng/api';
-// import { MenuItem } from 'primeng/api';
-// import { Breadcrumb } from 'primeng/breadcrumb';
-// import { RouterModule } from '@angular/router';
-// import { BreadcrumbModule } from 'primeng/breadcrumb';
-// @Component({
-//   selector: 'app-update-product',
-//   imports:  [ReactiveFormsModule,
-//     ToastModule,
-//      ButtonModule,
-//     CommonModule,
-//     FloatLabelModule,
-//     FieldsetModule,
-//     InputTextModule,
-//     FormsModule,
-//     Editor,
-//     InputNumber,
-//      Fluid,
-//      InputTextModule,
-//      DropdownModule,
-//      Toast,
-//      Ripple,
-//      Breadcrumb,
-//     RouterModule
-//     ],
-//     providers: [MessageService],
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProductService } from '../../services/Product/product.service';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Product, Variant } from '../../models/products';
+import { Timestamp } from '@angular/fire/firestore';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { Editor } from 'primeng/editor';
+import { InputNumber } from 'primeng/inputnumber';
+import { Fluid } from 'primeng/fluid';
+import { FileUpload } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
+import { FileUploadModule } from 'primeng/fileupload';
+import { DropdownModule } from 'primeng/dropdown';
+import { FieldsetModule } from 'primeng/fieldset';
+import { Validators } from '@angular/forms';
+import { Toast } from 'primeng/toast';
+import { Ripple } from 'primeng/ripple';
+import { MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { RouterModule } from '@angular/router';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { BrandService } from '../../services/brand/brand.service';
+import { Brand } from '../../models/brands';
+import { Select, SelectModule } from 'primeng/select';
+@Component({
+  selector: 'app-update-product',
+  imports:  [ReactiveFormsModule,
+    ToastModule,
+     ButtonModule,
+    CommonModule,
+    FloatLabelModule,
+    FieldsetModule,
+    InputTextModule,
+    FormsModule,
+    Editor,
+    InputNumber,
+     Fluid,
+     InputTextModule,
+     DropdownModule,
+     Toast,
+     Ripple,
+     Breadcrumb,
+    RouterModule,
+    Select,
+    SelectModule,
+    ],
+    providers: [MessageService,BrandService],
 
-//   templateUrl: './update-product.component.html',
-//   styleUrl: './update-product.component.css'
-// })
-// export class UpdateProductComponent implements OnInit {
-//   updateForm: FormGroup;
-//   productId!: string;
+  templateUrl: './update-product.component.html',
+  styleUrl: './update-product.component.css'
+})
+export class UpdateProductComponent implements OnInit {
+  // brands: any[] = [];
+  updateForm: FormGroup;
+  productId!: string;
+  brands: Brand[] = [];
 
-//   constructor(
-//     private fb: FormBuilder,
-//     private route: ActivatedRoute,
-//     private router: Router,
-//     private productService: ProductService,
-//     private messageService: MessageService
+
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private productService: ProductService,
+    private messageService: MessageService,
+    private brandService:BrandService
 
 //   ) {
 //     this.updateForm = this.fb.group({
@@ -161,11 +170,13 @@
 
 //     });
 
-//     this.items = [
-//       { icon: 'pi pi-home', route: '/' },
-//       { label: 'Edit Product', route: '/update-product' }
-//     ];
-//   }
+    this.items = [
+      { icon: 'pi pi-home', route: '/' },
+      { label: 'Edit Product', route: '/update-product' }
+    ];
+
+    this.getBrands()
+  }
 
 //   items: MenuItem[] | undefined;
 
@@ -290,7 +301,16 @@
 //     }
 //   }
 
-//   showSuccess() {
-//     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product updated succesfuly' });
-// };
-// }
+  showSuccess() {
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product updated succesfuly' });
+};
+
+
+getBrands(): void {
+  this.brandService.getBrands().subscribe((brands) => {
+    this.brands = brands;
+    console.log(this.brands);
+
+  });
+}
+}

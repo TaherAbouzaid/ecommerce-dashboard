@@ -1,21 +1,37 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { CategoryService } from './../../services/category/category.service';
+import { Category, Subcategory } from './../../models/category';
+import { BrandService } from './../../services/brand/brand.service';
+import { Brand } from './../../models/brands';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { ProductService } from '../../services/Product/product.service';
 import { CommonModule } from '@angular/common';
 import { Product, Variant } from '../../models/products';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
-import { EditorModule } from 'primeng/editor';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { Editor } from 'primeng/editor';
+import { InputNumber } from 'primeng/inputnumber';
+import { Fluid } from 'primeng/fluid';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
 import { MessageService } from 'primeng/api';
-import { RouterModule } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { Select, SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
-import { CategoryService } from '../../services/category/category.service';
-import { Category, Subcategory } from '../../models/category';
+
+
+
+
+
+// import { InputNumberModule } from 'primeng/inputnumber';
+
+
+
 
 @Component({
   selector: 'app-add-product',
@@ -29,80 +45,127 @@ import { Category, Subcategory } from '../../models/category';
     FieldsetModule,
     InputTextModule,
     FormsModule,
-    EditorModule,
-    InputNumberModule,
-    DropdownModule,
+    Editor,
+    InputNumber,
+     Fluid,
+     InputTextModule,
+     DropdownModule,
+     Toast,
+     Ripple,
+     Breadcrumb,
     RouterModule,
-    MessageModule
-  ],
-  providers: [MessageService],
+    Select,
+    SelectModule,
+    MessageModule,
+
+    ],
+  providers: [MessageService,BrandService,CategoryService],
+
   templateUrl: './add-product.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class AddProductComponent implements OnInit {
   productForm: FormGroup;
+  brands: Brand[] = [];
+  catagory: Category[] = [];
+  subcategory: Subcategory[]=[]
   isFormInvalid: boolean = true;
-  categories: Category[] = [];
-  subcategories: Subcategory[] = [];
+  productId: string | null = null;
+isEditMode = false;
+existingVariants: Variant[] = [];
+
+
+
+
+
+
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
     private messageService: MessageService,
+    // private router: Router,
+    private brandService: BrandService,
+    private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
-    private categoryService: CategoryService
-  ) {
-    this.productForm = this.fb.group({
-      productType: ['simple'],
-      title: this.fb.group({
-        en: ['', Validators.required],
-        ar: ['', Validators.required]
-      }),
-      description: this.fb.group({
-        en: [''],
-        ar: ['']
-      }),
-      price: [1, Validators.required],
-      discountPrice: [null],
-      quantity: [1, Validators.required],
-      sku: [''],
-      brandId: [''],
-      categoryId: [''],
-      subCategoryId: [''],
-      mainImage: [''],
-      images: [[]],
-      tags: [''],
-      vendorId: [''],
-      ratingSummary: this.fb.group({
-        average: [0],
-        count: [0]
-      }),
-      views: [0],
-      soldCount: [0],
-      wishlistCount: [0],
-      trendingScore: [0],
-      cartAdds: [0],
-      variants: this.fb.array([])
-    });
+    private route: ActivatedRoute,
 
-    this.productForm.get('productType')?.valueChanges.subscribe((type: string) => {
-      const variants = this.variants;
-      while (variants.length) {
-        variants.removeAt(0);
-      }
-      if (type === 'variant') {
-        variants.setValidators([Validators.minLength(1)]);
-      } else {
-        variants.clearValidators();
-      }
-      variants.updateValueAndValidity();
-      this.updateFormValidity();
-      this.cdr.markForCheck();
-    });
 
-    this.productForm.valueChanges.subscribe(() => {
-      this.updateFormValidity();
-    });
+
+    ) {
+      this.productForm = this.fb.group({
+        productType: ['simple'],
+        title: this.fb.group({
+          en: [''],
+          ar: ['']
+        }),
+        description: this.fb.group({
+          en: [''],
+          ar: ['']
+        }),
+        price: [1, Validators.required],
+        discountPrice: [null],
+        quantity: [1, Validators.required],
+        sku: [''],
+        brandId: [''],
+        categoryId: [''],
+        subCategoryId: [''],
+        mainImage: [''],
+        images: [[]],
+        tags: [''],
+        vendorId: [''],
+        ratingSummary: this.fb.group({
+          average: [0],
+          count: [0]
+        }),
+        views: [0],
+        soldCount: [0],
+        wishlistCount: [0],
+        trendingScore: [0],
+        cartAdds: [0],
+        variants: this.fb.array([])
+      },{ validators: this.discountPriceValidator });
+
+      this.productForm.get('productType')?.valueChanges.subscribe((type: string) => {
+        const variants = this.variants;
+        while (variants.length) {
+          variants.removeAt(0);
+        }
+        if (type === 'variant') {
+          variants.setValidators([Validators.minLength(1)]);
+        } else {
+          variants.clearValidators();
+        }
+        variants.updateValueAndValidity();
+        this.updateFormValidity();
+        this.cdr.markForCheck();
+      });
+
+      this.productForm.valueChanges.subscribe(() => {
+        this.updateFormValidity();
+      });
+
+
+  }
+
+    discountPriceValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const price = control.get('price')?.value;
+    const discountPrice = control.get('discountPrice')?.value;
+
+    if (price != null && discountPrice != null && discountPrice >= price) {
+      return { discountInvalid: true };
+    }
+    return null;
+  };
+
+   discountLessThanPriceValidator(group: AbstractControl): ValidationErrors | null {
+    const price = group.get('price')?.value;
+    const discount = group.get('discountPrice')?.value;
+    if (discount != null && discount >= price) {
+      return { discountTooHigh: true };
+    }
+    return null;
   }
 
   variantsValidator(): ValidatorFn {
@@ -129,21 +192,52 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.categoryService.getCategories().subscribe((data: Category[]) => {
-      this.categories = data;
-      this.cdr.markForCheck();
-    });
+      this.items = [
+        { icon: 'pi pi-home', route: '/' },
+        { label: 'Add Product',route: '/add-product' }
 
-    this.categoryService.getSubcategories().subscribe((data: Subcategory[]) => {
-      this.subcategories = data;
-      this.cdr.markForCheck();
-    });
-    this.updateFormValidity();
+
+
+        ];
+        this.getBrands()
+        this.getCatagory()
+        this.getSubCatagory()
+        this.updateFormValidity();
+        this.productId = this.route.snapshot.paramMap.get('id');
+        this.isEditMode = !!this.productId;
+
+        if (this.isEditMode) {
+          this.loadProductForEdit();
+        }
+
   }
+
+  items: MenuItem[] | undefined;
+
+  home: MenuItem | undefined;
+
+
 
   get variants(): FormArray {
     return this.productForm.get('variants') as FormArray;
   }
+
+
+  addVariant() {
+    const newVariant = this.createVariant();
+    this.variants.push(newVariant);
+    this.updateFormValidity();
+    this.cdr.markForCheck();
+  }
+
+  removeVariant(index: number) {
+    this.variants.removeAt(index);
+    this.updateFormValidity();
+    this.cdr.markForCheck();
+  }
+
+
+
 
   getAttributes(variantIndex: number): FormArray {
     const variant = this.variants.at(variantIndex) as FormGroup;
@@ -164,7 +258,7 @@ export class AddProductComponent implements OnInit {
       mainImage: [''],
       images: [[]],
       sku: ['']
-    });
+    }, { validators: this.discountLessThanPriceValidator });
     return variant;
   }
 
@@ -176,18 +270,8 @@ export class AddProductComponent implements OnInit {
     return attribute;
   }
 
-  addVariant() {
-    const newVariant = this.createVariant();
-    this.variants.push(newVariant);
-    this.updateFormValidity();
-    this.cdr.markForCheck();
-  }
 
-  removeVariant(index: number) {
-    this.variants.removeAt(index);
-    this.updateFormValidity();
-    this.cdr.markForCheck();
-  }
+
 
   addAttribute(variantIndex: number) {
     const attributes = this.getAttributes(variantIndex);
@@ -226,6 +310,9 @@ export class AddProductComponent implements OnInit {
       attribute.markAsTouched();
     }
   }
+
+
+
 
   async uploadImage(event: Event, controlName: string, variantIndex?: number) {
     const input = event.target as HTMLInputElement;
@@ -268,6 +355,50 @@ export class AddProductComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     console.log(`Input ${field} for variant ${variantIndex}, attribute ${attrIndex}:`, input.value);
   }
+
+
+
+  //..................update............
+  async loadProductForEdit() {
+    if (!this.productId) return;
+
+    try {
+      // جلب بيانات المنتج
+      const product = await this.productService.getProductById(this.productId);
+      if (!product) return;
+
+      // جلب الـ Variants
+      this.existingVariants = await this.productService.getProductVariants(this.productId);
+
+      // تعبئة النموذج
+      this.productForm.patchValue({
+        ...product,
+        tags: product.tags?.join(',') || ''
+      });
+
+      // تعبئة الـ Variants
+      if (product.productType === 'variant' && this.existingVariants.length) {
+        this.existingVariants.forEach(variant => {
+          const newVariant = this.createVariant();
+          newVariant.patchValue({
+            ...variant,
+            attributes: variant.attributes || []
+          });
+          this.variants.push(newVariant);
+        });
+      }
+
+      this.cdr.markForCheck();
+    } catch (error) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to load product for editing'
+      });
+    }
+  }
+
+  //....................................................................
 
   async onSubmit() {
     // Temporarily remove validators for variants to check base form validity
@@ -316,17 +447,58 @@ export class AddProductComponent implements OnInit {
       productData.tags = [];
     }
 
+    // try {
+    //   const productId = await this.productService.addProduct(productData as Product, variantsToSave as Variant[]);
+    //   this.messageService.add({ severity: 'success', summary: 'Successfully', detail: 'Product added successfully' });
+    //   this.productForm.reset();
+    //   this.variants.clear();
+    //   this.updateFormValidity();
+    //   this.cdr.markForCheck();
+    // } catch (error) {
+    //   this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add product: '});
+    // }
+
+
+    //.........update..........//
     try {
-      const productId = await this.productService.addProduct(productData as Product, variantsToSave as Variant[]);
-      this.messageService.add({ severity: 'success', summary: 'Successfully', detail: 'Product added successfully' });
-      this.productForm.reset();
-      this.variants.clear();
+      if (this.isEditMode && this.productId) {
+        await this.productService.updateProductWithVariants(
+          this.productId,
+          productData as Product,
+          variantsToSave as Variant[]
+        );
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Product updated successfully'
+        });
+      } else {
+        await this.productService.addProduct(
+          productData as Product,
+          variantsToSave as Variant[]
+        );
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Product added successfully'
+        });
+        this.productForm.reset();
+        this.variants.clear();
+      }
       this.updateFormValidity();
       this.cdr.markForCheck();
     } catch (error) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add product: '});
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: this.isEditMode ?
+          'Failed to update product' : 'Failed to add product'
+      });
     }
+
+
   }
+
 
   updateFormValidity() {
     const productType = this.productForm.get('productType')?.value;
@@ -341,4 +513,61 @@ export class AddProductComponent implements OnInit {
   trackByFn(index: number, item: any): number {
     return index;
   }
+
+
+
+
+
+
+  showSuccess() {
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product add succesfuly' });
+};
+
+
+getBrands(): void {
+  this.brandService.getBrands().subscribe((brands) => {
+    this.brands = brands;
+    console.log(this.brands);
+
+  });
+}
+
+
+    onBrandChange(event: any) {
+
+      this.productForm.patchValue({ brandId: event.value });
+      this.productForm.get('brandId')?.setValue(event.value);
+
+      console.log('Selected brand:', event.value);
+    }
+
+
+getCatagory(): void {
+  // this.categoryService.getCategories().subscribe((catagory) => {
+  //   this.catagory = catagory;
+  // });
+  this.categoryService.getCategories().subscribe((data: Category[]) => {
+    this.catagory = data;
+    // this.cdr.markForCheck();
+  });
+
+
+}
+
+getSubCatagory():void{
+  // this.categoryService.getSubcategories().subscribe((subcategory)=>{
+  //   this.subcategory = subcategory;
+  // })
+  this.categoryService.getSubcategories().subscribe((data: Subcategory[]) => {
+    this.subcategory = data;
+    // this.cdr.markForCheck();
+  });
+
+
+}
+
+
+
+
+
 }
