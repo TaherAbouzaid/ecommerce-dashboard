@@ -44,7 +44,7 @@ export class UsersComponent implements OnInit {
       this.originalUsers = JSON.parse(JSON.stringify(data));
 
       this.users.forEach(user => {
-        if (!user.name) {
+        if (!user.fullName) {
           console.warn(`User with ID: ${user.userId} is missing fullName`);
         }
       });
@@ -65,20 +65,20 @@ export class UsersComponent implements OnInit {
 
       const updatedFields: Partial<User> = {};
 
-      if (current.name !== original.name) updatedFields.name = current.name;
+      if (current.fullName !== original.fullName) updatedFields.fullName = current.fullName;
       if (current.email !== original.email) updatedFields.email = current.email;
       if (current.phone !== original.phone) updatedFields.phone = current.phone;
       if (current.role !== original.role) updatedFields.role = current.role;
 
       if (Object.keys(updatedFields).length > 0) {
-        const userRef = doc(this.firestore, `Users/${current.userId}`);
+        const userRef = doc(this.firestore, `users/${current.userId}`);
         const updatePromise = updateDoc(userRef, updatedFields)
           .then(() => {
-            console.log(`Updated user ${current.name || 'Unknown'}:`, updatedFields);
+            console.log(`Updated user ${current.fullName || 'Unknown'}:`, updatedFields);
             this.originalUsers[i] = { ...current };
           })
           .catch((error) => {
-            console.error(`Error updating user ${current.name}:`, error);
+            console.error(`Error updating user ${current.fullName}:`, error);
           });
 
         promises.push(updatePromise);
@@ -106,13 +106,13 @@ export class UsersComponent implements OnInit {
   deleteSelectedUsers() {
     const selectedUsers = this.users.filter(user => user.selected);
     const promises = selectedUsers.map(user => {
-      const userRef = doc(this.firestore, `Users/${user.userId}`);
+      const userRef = doc(this.firestore, `users/${user.userId}`);
       return deleteDoc(userRef)
         .then(() => {
-          console.log(`User ${user.name || 'Unknown User'} deleted successfully`);
+          console.log(`User ${user.fullName || 'Unknown User'} deleted successfully`);
         })
         .catch(error => {
-          console.error(`Error deleting user ${user.name || 'Unknown User'}:`, error);
+          console.error(`Error deleting user ${user.fullName || 'Unknown User'}:`, error);
         });
     });
 
@@ -133,7 +133,7 @@ export class UsersComponent implements OnInit {
         });
       });
   }
-
+  
   confirmDeleteSelected() {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete the selected users?',
