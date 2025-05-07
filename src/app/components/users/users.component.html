@@ -6,7 +6,6 @@
   class="shadow-xl rounded-xl border border-gray-200 overflow-hidden"
   [tableStyle]="{ 'min-width': '1200px' }"
   editMode="cell"
-  
 >
   <ng-template pTemplate="header">
     <tr class="bg-gray-200 text-gray-800 text-sm font-semibold">
@@ -24,17 +23,8 @@
 
   <ng-template pTemplate="body" let-user>
     <tr class="hover:bg-gray-50 transition duration-300 text-sm text-gray-700">
-<<<<<<< HEAD
-      <td class="p-3 flex items-center justify-center">
-        <img 
-          [src]="user.profileimage || '../../../assets/favicon.ico'" 
-          alt="User Avatar" 
-          class="w-8 h-8 rounded-full object-cover"
-        />
-=======
       <td class="p-4">
         <input type="checkbox" [(ngModel)]="user.selected" class="checkbox"/>
->>>>>>> b9db4ef090861be357613c43e250f8ccf1290305
       </td>
 
       <td class="p-4 flex items-center justify-start">
@@ -59,7 +49,7 @@
           </ng-template>
         </p-cellEditor>
       </td>
-      
+
 
       <!-- <td class="p-4">{{ user.email }}</td> -->
 
@@ -73,7 +63,7 @@
           </ng-template>
         </p-cellEditor>
       </td>
-      
+
 
       <!-- <td class="p-4">{{ user.phone || "N/A" }}</td> -->
 
@@ -87,7 +77,7 @@
           </ng-template>
         </p-cellEditor>
       </td>
-      
+
 
       <!-- <td class="p-4">
         <select class="border rounded px-2 py-1 text-sm capitalize" [(ngModel)]="user.role">
@@ -107,14 +97,14 @@
           </ng-template>
         </p-cellEditor>
       </td>
-      
+
 
       <td class="p-4">
         <ul class="list-disc list-inside space-y-1">
           <li *ngFor="let address of user.address">{{ address }}</li>
         </ul>
       </td>
-      
+
       <td class="p-4 text-center font-bold text-indigo-600">
         {{ user.wishlist.length }}
       </td>
@@ -122,7 +112,7 @@
         <p-button label="Edit" (click)="editUser(user)"></p-button>
       </td> -->
 
-      
+
     </tr>
   </ng-template>
 </p-table>

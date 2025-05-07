@@ -29,7 +29,7 @@ import { ConfirmationService } from 'primeng/api';
 export class UsersComponent implements OnInit {
   users: User[] = [];
   originalUsers: User[] = [];
-  roles: string[] = ['admin', 'customer', 'vendor', 'other'];
+  roles: string[] = ['admin', 'customer', 'vendor', 'Author', 'shop manager'];
 
   constructor(
     private userService: UserService,
@@ -53,38 +53,38 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  
+
   saveChanges() {
     const promises = [];
-  
+
     for (let i = 0; i < this.users.length; i++) {
       const current = this.users[i];
       const original = this.originalUsers[i];
-  
+
       if (!current.userId) continue;
-  
+
       const updatedFields: Partial<User> = {};
-  
+
       if (current.name !== original.name) updatedFields.name = current.name;
       if (current.email !== original.email) updatedFields.email = current.email;
       if (current.phone !== original.phone) updatedFields.phone = current.phone;
       if (current.role !== original.role) updatedFields.role = current.role;
-  
+
       if (Object.keys(updatedFields).length > 0) {
         const userRef = doc(this.firestore, `Users/${current.userId}`);
         const updatePromise = updateDoc(userRef, updatedFields)
           .then(() => {
             console.log(`Updated user ${current.name || 'Unknown'}:`, updatedFields);
-            this.originalUsers[i] = { ...current }; 
+            this.originalUsers[i] = { ...current };
           })
           .catch((error) => {
             console.error(`Error updating user ${current.name}:`, error);
           });
-  
+
         promises.push(updatePromise);
       }
     }
-  
+
     Promise.all(promises)
       .then(() => {
         this.messageService.add({
@@ -101,7 +101,7 @@ export class UsersComponent implements OnInit {
         });
       });
   }
-  
+
 
   deleteSelectedUsers() {
     const selectedUsers = this.users.filter(user => user.selected);
@@ -142,7 +142,7 @@ export class UsersComponent implements OnInit {
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        this.deleteSelectedUsers(); 
+        this.deleteSelectedUsers();
       }
     });
   }
@@ -160,16 +160,16 @@ export class UsersComponent implements OnInit {
   //     if (newValue !== null) {
   //       const key = updatedField as keyof User;
   //       user[key] = newValue as any;
-      
+
   //       this.messageService.add({
   //         severity: 'success',
   //         summary: 'Success',
   //         detail: `${updatedField} updated successfully!`,
   //       });
-      
+
   //       this.saveChanges();
   //     }
-      
+
   //   } else {
   //     this.messageService.add({
   //       severity: 'error',
