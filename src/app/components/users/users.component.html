@@ -5,6 +5,8 @@
   responsiveLayout="scroll"
   class="shadow-xl rounded-xl border border-gray-200 overflow-hidden"
   [tableStyle]="{ 'min-width': '1200px' }"
+  editMode="cell"
+  
 >
   <ng-template pTemplate="header">
     <tr class="bg-gray-200 text-gray-800 text-sm font-semibold">
@@ -16,6 +18,7 @@
       <th class="p-4 text-left">Role</th>
       <th class="p-4 text-left">Address</th>
       <th class="p-4 text-center">Wishlist Count</th>
+      <!-- <th class="p-4 text-center">Edit</th> -->
     </tr>
   </ng-template>
 
@@ -35,27 +38,82 @@
         </div>
       </td>
 
-      <td class="p-4">{{ user.name }}</td>
+      <!-- <td class="p-4">{{ user.name }}</td> -->
 
-      <td class="p-4">{{ user.email }}</td>
+      <td class="p-4" pEditableColumn>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input [(ngModel)]="user.name" class="p-inputtext p-component" />
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ user.name }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      
 
-      <td class="p-4">{{ user.phone || "N/A" }}</td>
+      <!-- <td class="p-4">{{ user.email }}</td> -->
 
-      <td class="p-4">
+      <td class="p-4" pEditableColumn>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input [(ngModel)]="user.email" class="p-inputtext p-component" />
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ user.email }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      
+
+      <!-- <td class="p-4">{{ user.phone || "N/A" }}</td> -->
+
+      <td class="p-4" pEditableColumn>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input [(ngModel)]="user.phone" class="p-inputtext p-component" />
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ user.phone }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      
+
+      <!-- <td class="p-4">
         <select class="border rounded px-2 py-1 text-sm capitalize" [(ngModel)]="user.role">
           <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
         </select>
+      </td> -->
+
+      <td class="p-4" pEditableColumn>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <select class="border rounded px-2 py-1 text-sm capitalize" [(ngModel)]="user.role">
+              <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+            </select>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ user.role }}
+          </ng-template>
+        </p-cellEditor>
       </td>
+      
 
       <td class="p-4">
         <ul class="list-disc list-inside space-y-1">
           <li *ngFor="let address of user.address">{{ address }}</li>
         </ul>
       </td>
-
+      
       <td class="p-4 text-center font-bold text-indigo-600">
         {{ user.wishlist.length }}
       </td>
+      <!-- <td class="p-4 text-center">
+        <p-button label="Edit" (click)="editUser(user)"></p-button>
+      </td> -->
+
+      
     </tr>
   </ng-template>
 </p-table>

@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
-import { Firestore, doc, updateDoc,deleteDoc } from '@angular/fire/firestore';
+import { Firestore, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -25,16 +25,18 @@ import { ConfirmationService } from 'primeng/api';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css'],
   providers: [MessageService, ConfirmationService],
- 
-
 })
 export class UsersComponent implements OnInit {
   users: User[] = [];
   originalUsers: User[] = [];
   roles: string[] = ['admin', 'customer', 'vendor', 'other'];
 
-  constructor(private userService: UserService, private firestore: Firestore,
-    private messageService: MessageService,private confirmationService: ConfirmationService) {}
+  constructor(
+    private userService: UserService,
+    private firestore: Firestore,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => {
@@ -46,6 +48,7 @@ export class UsersComponent implements OnInit {
           console.warn(`User with ID: ${user.userId} is missing fullName`);
         }
       });
+
       console.log('Loaded Users:', this.users);
     });
   }
@@ -53,21 +56,29 @@ export class UsersComponent implements OnInit {
   
   saveChanges() {
     const promises = [];
+  
     for (let i = 0; i < this.users.length; i++) {
       const current = this.users[i];
       const original = this.originalUsers[i];
   
       if (!current.userId) continue;
-      if (current.role !== original.role) {
+  
+      const updatedFields: Partial<User> = {};
+  
+      if (current.name !== original.name) updatedFields.name = current.name;
+      if (current.email !== original.email) updatedFields.email = current.email;
+      if (current.phone !== original.phone) updatedFields.phone = current.phone;
+      if (current.role !== original.role) updatedFields.role = current.role;
+  
+      if (Object.keys(updatedFields).length > 0) {
         const userRef = doc(this.firestore, `Users/${current.userId}`);
-        const updatePromise = updateDoc(userRef, { role: current.role })
+        const updatePromise = updateDoc(userRef, updatedFields)
           .then(() => {
-            const userName = current.name || 'Unknown User';
-            console.log(`Role updated for ${userName}`);
-            this.originalUsers[i].role = current.role;
+            console.log(`Updated user ${current.name || 'Unknown'}:`, updatedFields);
+            this.originalUsers[i] = { ...current }; 
           })
           .catch((error) => {
-            console.error(`Error updating role for ${current.name}:`, error);
+            console.error(`Error updating user ${current.name}:`, error);
           });
   
         promises.push(updatePromise);
@@ -104,7 +115,7 @@ export class UsersComponent implements OnInit {
           console.error(`Error deleting user ${user.name || 'Unknown User'}:`, error);
         });
     });
-  
+
     Promise.all(promises)
       .then(() => {
         this.users = this.users.filter(user => !user.selected);
@@ -122,6 +133,7 @@ export class UsersComponent implements OnInit {
         });
       });
   }
+
   confirmDeleteSelected() {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete the selected users?',
@@ -134,6 +146,36 @@ export class UsersComponent implements OnInit {
       }
     });
   }
-  
-  } 
-  
+
+  // editUser(user: User) {
+  //   const updatedField = prompt('Enter the field to edit (name, email, phone, role):');
+
+  //   if (
+  //     updatedField &&
+  //     (['name', 'email', 'phone', 'role'] as Array<keyof User>).includes(updatedField as keyof User)
+  //   ) {
+  //     const key = updatedField as keyof User;
+  //     const newValue = prompt(`Enter new value for ${updatedField}:`, user[key] as string);
+
+  //     if (newValue !== null) {
+  //       const key = updatedField as keyof User;
+  //       user[key] = newValue as any;
+      
+  //       this.messageService.add({
+  //         severity: 'success',
+  //         summary: 'Success',
+  //         detail: `${updatedField} updated successfully!`,
+  //       });
+      
+  //       this.saveChanges();
+  //     }
+      
+  //   } else {
+  //     this.messageService.add({
+  //       severity: 'error',
+  //       summary: 'Invalid Field',
+  //       detail: 'Please enter a valid field to edit.',
+  //     });
+  //   }
+  // }
+}

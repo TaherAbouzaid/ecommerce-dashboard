@@ -15,4 +15,5 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
     selected?: boolean; 
+    [key: string]: any;
   }
