@@ -1,4 +1,6 @@
 import { Timestamp } from '@angular/fire/firestore';
+import { Category } from './category';
+import { Subcategory } from './category';
 
 export interface LocalizedString {
   en: string;
@@ -33,8 +35,8 @@ export interface Product {
   quantity: number;
   sku: string;
   brandId: string;
-  categoryId: string;
-  subCategoryId: string;
+  categoryId: Category;
+  subCategoryId: Subcategory;
   mainImage: string;
   images: string[];
   tags: string[];

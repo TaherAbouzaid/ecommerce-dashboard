@@ -99,7 +99,7 @@ export class ProductListComponent implements OnInit {
 
     exportColumns!: ExportColumn[];
   firestore: any;
-
+  items: MenuItem[] = [];
 
 
 
@@ -147,31 +147,36 @@ ngOnInit() {
   }
 
 
-  items: MenuItem[] | undefined;
+  // items: MenuItem[] | undefined;
   home: MenuItem | undefined;
 
 
   loadDemoData() {
-      this.productService.getProducts().subscribe((data) => {
-          console.log('Products:', this.products);
-          this.products = data;
-          console.log(data[0].title);
+    this.productService.getProducts().subscribe((data) => {
+      this.products = data.map(product => ({
+        ...product,
+        name: product.title?.en || 'No title',
+        category: product.categoryId?.name?.en || 'No category',
+        subCategory: product.subCategoryId?.name?.en || 'No sub category',
+        inventoryStatus: this.getStatus(product.quantity || 0),
+        rating: product.ratingSummary?.average || 0
+      }));
+      this.cd.markForCheck();
+    });
 
-          // this.cd.markForCheck();
-      });
-
-      this.statuses = [
-        { label: 'INSTOCK', value: 'instock' },
-        { label: 'LOWSTOCK', value: 'lowstock' },
-        { label: 'OUTOFSTOCK', value: 'outofstock' }
+    this.statuses = [
+      { label: 'INSTOCK', value: 'instock' },
+      { label: 'LOWSTOCK', value: 'lowstock' },
+      { label: 'OUTOFSTOCK', value: 'outofstock' }
     ];
 
     this.cols = [
-        { field: 'code', header: 'Code', customExportHeader: 'Product Code' },
-        { field: 'name', header: 'Name' },
-        { field: 'image', header: 'Image' },
-        { field: 'price', header: 'Price' },
-        { field: 'category', header: 'Category' }
+      { field: 'name', header: 'Name' },
+      { field: 'image', header: 'Image' },
+      { field: 'price', header: 'Price' },
+      { field: 'category', header: 'Category' },
+      { field: 'rating', header: 'Reviews' },
+      { field: 'inventoryStatus', header: 'Status' }
     ];
 
     this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
@@ -295,10 +300,19 @@ get productName():string{
 
 
 
-filterGlobal(event: any, stringVal: string) {
-  this.dt.filterGlobal((event.target as HTMLInputElement).value, stringVal);
+filterGlobal(event: Event, stringVal: string) {
+  const inputElement = event.target as HTMLInputElement;
+  if (inputElement) {
+    this.dt.filterGlobal(inputElement.value, stringVal);
+  }
 }
 
+filterColumn(event: Event, field: string, mode: string) {
+  const inputElement = event.target as HTMLInputElement;
+  if (inputElement) {
+    this.dt.filter(inputElement.value, field, mode);
+  }
+}
 createProduct(): void {
   this.router.navigate(['/add-product']);
 }
@@ -331,7 +345,11 @@ createProduct(): void {
   // }
 
 
-
+  filterProducts(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.dt.filter(value, 'title.en', 'contains');
+  }
+  
 
 
 
@@ -348,6 +366,7 @@ createProduct(): void {
 //   }
 //   this.cd.markForCheck(); // Mark for check to update the view
 }
+
 
 
 
