@@ -15,6 +15,7 @@ export class AddPostComponent implements OnInit {
   postForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  isEditMode = false;
 
   constructor(
     private fb: FormBuilder,
@@ -31,6 +32,7 @@ export class AddPostComponent implements OnInit {
   ngOnInit() {
     const post = history.state.post;
     if (post) {
+      this.isEditMode = true;
       this.postForm.patchValue({
         title: post.title,
         content: post.content,

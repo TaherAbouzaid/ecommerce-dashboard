@@ -1,0 +1,40 @@
+<div *ngIf="isLoading" class="p-6 text-center text-gray-500">
+  <p>Loading post details...</p>
+</div>
+<div *ngIf="errorMessage" class="p-6 text-center text-red-500">
+  {{ errorMessage }}
+</div>
+<div *ngIf="!isLoading && !errorMessage && post" class="max-w-2xl mx-auto p-6 bg-white rounded shadow">
+  <img [src]="post.image || 'https://images.pexels.com/photos/31067936/pexels-photo-31067936/free-photo-of-minimalist-architectural-white-wall-with-blue-sky.jpeg'" alt="Post Image" class="w-full h-64 object-cover rounded mb-4" />
+  <h2 class="text-2xl font-bold mb-2">{{ post.title }}</h2>
+  <div class="mb-2 text-xs text-gray-500">
+    <span>By {{ post.authorId }}</span>
+  </div>
+  <div class="mb-2 text-xs text-gray-400">
+    <span *ngIf="post.createdAt">Created: {{ post.createdAt.toDate() | date:'medium' }}</span>
+    <span *ngIf="post.updatedAt" class="ml-2">Updated: {{ post.updatedAt.toDate() | date:'medium' }}</span>
+  </div>
+  <div class="mb-4 text-gray-700">
+    {{ post.content }}
+  </div>
+  <div class="flex items-center text-xs text-gray-500 mb-4 gap-4">
+    <span title="Views">👁️ {{ post.views }}</span>
+    <span title="Likes">❤️ {{ post.likesCount }}</span>
+  </div>
+  <div class="border-t pt-4 mt-4">
+    <h3 class="text-lg font-semibold mb-2">Comments ({{ commentsWithReplies.length }})</h3>
+    <div *ngIf="commentsWithReplies.length === 0" class="text-gray-400">No comments yet.</div>
+    <div *ngFor="let item of commentsWithReplies" class="mb-4">
+      <div class="p-3 bg-gray-100 rounded">
+        <div class="font-medium text-gray-800">{{ item.comment.content }}</div>
+        <div class="text-xs text-gray-500">Comment ID: {{ item.comment.commentId }}</div>
+        <div *ngIf="item.replies.length > 0" class="mt-2 pl-4 border-l-2 border-gray-300">
+          <div class="text-sm font-medium text-gray-600 mb-1">Replies:</div>
+          <div *ngFor="let reply of item.replies" class="text-sm text-gray-700">
+            ↳ {{ reply.content }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

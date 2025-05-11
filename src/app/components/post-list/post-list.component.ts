@@ -16,6 +16,10 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../models/user.model';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-post-list',
@@ -27,8 +31,11 @@ import { Router } from '@angular/router';
     ButtonModule,
     InputTextModule,
     TextareaModule,
-    FormsModule
-  ]
+    FormsModule,
+    ToastModule,
+    ConfirmDialogModule
+  ],
+  providers: [MessageService, ConfirmationService]
 })
 export class PostListComponent implements OnInit {
   postsWithCommentsAndReplies: {
@@ -52,7 +59,9 @@ export class PostListComponent implements OnInit {
     private commentService: CommentService,
     private replyService: ReplyService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
@@ -157,18 +166,30 @@ export class PostListComponent implements OnInit {
   }
 
   deletePost(postId: string): void {
-    this.postService.deletePost(postId).subscribe({
-      next: () => {
-        console.log('Post deleted');
-        this.loadPostsWithCommentsAndReplies();
-      },
-      error: err => console.error('Error deleting post:', err)
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this post?',
+      header: 'Confirm Delete',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.postService.deletePost(postId).subscribe({
+          next: () => {
+            console.log('Post deleted');
+            this.loadPostsWithCommentsAndReplies();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Deleted',
+              detail: 'Post deleted successfully',
+              life: 3000
+            });
+          },
+          error: err => console.error('Error deleting post:', err)
+        });
+      }
     });
   }
 
   viewPost(post: Post): void {
-    // TODO: Implement post detail view (e.g., open dialog or navigate to detail page)
-    alert('View post: ' + post.title);
+    this.router.navigate(['/post-details', post.postId]);
   }
 }
 //post-list.component.ts

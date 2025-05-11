@@ -15,7 +15,7 @@ import { OrderListComponent } from './components/order-list/order-list.component
 // import { AuthRoleGuard } from './guard/role.guard';
 import { RoleGuard } from './guard/guards/auth.guard';
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
-
+import { PostDetailsComponent } from './components/post-details/post-details.component';
 // import { RoleGuard } from './guard/guards/auth.guard';
 
 export const routes: Routes = [
@@ -43,6 +43,7 @@ export const routes: Routes = [
       { path: 'list-posts', component: PostListComponent },
       { path: 'comment-list', component: CommentListComponent },
       { path: 'add-post', component: AddPostComponent },
+      { path: 'post-details/:postId', component: PostDetailsComponent },
     ],
   },
 ];
