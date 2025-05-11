@@ -74,12 +74,14 @@
   [columns]="cols"
   [paginator]="true"
   [globalFilterFields]="['name', 'category', 'subCategory', 'inventoryStatus']"
-  [tableStyle]="{ 'min-width': '75rem' }"
+  [tableStyle]="{ 'min-width': '60rem' }"
   [(selection)]="selectedProducts"
   [rowHover]="true"
   dataKey="id"
   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
   [showCurrentPageReport]="true"
+  sortField="updatedAt"
+  [sortOrder]="-1"
 >
   <ng-template #caption>
     <div class="flex items-center justify-between">
@@ -96,16 +98,9 @@
   </ng-template>
   <ng-template #header>
     <tr>
-      <th pSortableColumn="name" style="min-width: 16rem">
+      <th pSortableColumn="name" style="min-width: 10rem; max-width: 18rem;">
         Name
         <p-sortIcon field="name" />
-        <!-- <input
-          pInputText
-          type="text"
-          (input)="filterColumn($event, 'name', 'contains')"
-          placeholder="Filter by name"
-          class="p-inputtext-sm"
-        /> -->
       </th>
       <th>Image</th>
       <th pSortableColumn="price" style="min-width: 8rem">
@@ -116,47 +111,77 @@
           type="text"
           (input)="filterColumn($event, 'price', 'equals')"
           placeholder="Filter by price"
-          class="p-inputtext-sm"
+          class="p-inputtext-sm block mt-2"
         /> -->
       </th>
       <th pSortableColumn="category" style="min-width: 10rem">
         Category
         <p-sortIcon field="category" />
-        <!-- <input
-          pInputText
-          type="text"
-          (input)="filterColumn($event, 'category', 'contains')"
+        <p-dropdown
+          [options]="categories"
+          (onChange)="onCategoryChange($event)"
           placeholder="Filter by category"
-          class="p-inputtext-sm"
-        /> -->
+          styleClass="p-inputtext-sm block mt-2 w-full"
+          [showClear]="true"
+          [filter]="true"
+          filterBy="label"
+          [style]="{'min-width':'200px'}"
+          [styleClass]="'w-full'"
+          [panelStyleClass]="'w-full'"
+          [optionLabel]="'label'"
+          [optionValue]="'value'"
+          [scrollHeight]="'200px'"
+        />
+      </th>
+      <th pSortableColumn="subCategory" style="min-width: 10rem">
+        Sub Category
+        <p-sortIcon field="subCategory" />
+        <p-dropdown
+          [options]="subCategories"
+          (onChange)="onSubCategoryChange($event)"
+          placeholder="Filter by sub category"
+          styleClass="p-inputtext-sm block mt-2 w-full"
+          [showClear]="true"
+          [filter]="true"
+          filterBy="label"
+          [style]="{'min-width':'200px'}"
+          [styleClass]="'w-full'"
+          [panelStyleClass]="'w-full'"
+          [optionLabel]="'label'"
+          [optionValue]="'value'"
+          [scrollHeight]="'200px'"
+        />
       </th>
       <th pSortableColumn="rating" style="min-width: 12rem">
         Reviews
         <p-sortIcon field="rating" />
-        <!-- <input
-          pInputText
-          type="text"
-          (input)="filterColumn($event, 'rating', 'equals')"
-          placeholder="Filter by rating"
-          class="p-inputtext-sm"
-        /> -->
       </th>
       <th pSortableColumn="inventoryStatus" style="min-width: 12rem">
-        Status
+        Status <p-sortIcon field="inventoryStatus" />
         <p-dropdown
           [options]="statuses"
-          (onChange)="dt.filter($event.value, 'inventoryStatus', 'equals')"
+          (onChange)="filterColumn($event.value, 'inventoryStatus', 'equals')"
           placeholder="Filter by status"
-          styleClass="p-inputtext-sm"
+          styleClass="p-inputtext-sm block mt-2 w-full"
+          [showClear]="true"
+          [filter]="true"
+          filterBy="label"
+          [style]="{'min-width':'200px'}"
+          [styleClass]="'w-full'"
+          [panelStyleClass]="'w-full'"
+          [optionLabel]="'label'"
+          [optionValue]="'value'"
+          [scrollHeight]="'200px'"
         />
-        <p-sortIcon field="inventoryStatus" />
       </th>
       <th style="min-width: 12rem">Actions</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-product>
     <tr>
-      <td style="min-width: 16rem">{{ product.name }}</td>
+      <td style="min-width: 10rem; max-width: 18rem;">
+        <span class="product-name-ellipsis">{{ product.name }}</span>
+      </td>
       <td>
         <img
           [src]="product.mainImage"
@@ -184,22 +209,16 @@
         </span>
       </td>
       <td>
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <span style="font-weight: bold; color: #333">
-            <i
-              class="pi pi-folder"
-              style="margin-right: 4px; color: #007ad9"
-            ></i>
-            {{ product.category }}
-          </span>
-          <span style="font-size: 0.9rem; color: #666">
-            <i
-              class="pi pi-tag"
-              style="margin-right: 4px; color: #ff9800"
-            ></i>
-            {{ product.subCategory }}
-          </span>
-        </div>
+        <span style="font-weight: bold; color: #333">
+          <i class="pi pi-folder" style="margin-right: 4px; color: #007ad9"></i>
+          {{ product.category }}
+        </span>
+      </td>
+      <td>
+        <span style="font-size: 0.9rem; color: #666">
+          <i class="pi pi-tag" style="margin-right: 4px; color: #ff9800"></i>
+          {{ product.subCategory }}
+        </span>
       </td>
       <td>
         <p-rating [(ngModel)]="product.rating" [readonly]="true" />

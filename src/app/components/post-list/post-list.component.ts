@@ -13,6 +13,9 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-post-list',
@@ -40,18 +43,33 @@ export class PostListComponent implements OnInit {
       content: string;
     };
   }[] = [];
-
+  users: User[] = [];
   isLoading: boolean = true;
   errorMessage: string | null = null;
 
   constructor(
     private postService: PostService,
     private commentService: CommentService,
-    private replyService: ReplyService
+    private replyService: ReplyService,
+    private userService: UserService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.loadUsers();
     this.loadPostsWithCommentsAndReplies();
+  }
+
+  private loadUsers(): void {
+    this.userService.getUsers().subscribe({
+      next: (users: User[]) => this.users = users,
+      error: (err: any) => console.error('Error loading users:', err)
+    });
+  }
+
+  getAuthorName(authorId: string): string {
+    const user = this.users.find(u => u.userId === authorId);
+    return user ? user.fullName : 'User';
   }
 
   private loadPostsWithCommentsAndReplies(): void {
@@ -114,13 +132,7 @@ export class PostListComponent implements OnInit {
 
   toggleEdit(postIndex: number): void {
     const post = this.postsWithCommentsAndReplies[postIndex];
-    post.isEditing = !post.isEditing;
-    if (!post.isEditing) {
-      post.editData = {
-        title: post.post.title,
-        content: post.post.content
-      };
-    }
+    this.router.navigate(['/add-post'], { state: { post: post.post } });
   }
 
   updatePost(postIndex: number): void {
@@ -140,23 +152,8 @@ export class PostListComponent implements OnInit {
     });
   }
 
-  createPost(): void {
-    const newPost: Omit<Post, 'postId' | 'createdAt' | 'updatedAt'> = {
-      title: 'عنوان جديد',
-      content: 'محتوى جديد',
-      authorId: 'user_123',
-      views: 0,
-      likesCount: 0,
-      commentIds: []
-    };
-
-    this.postService.createPost(newPost).subscribe({
-      next: post => {
-        console.log('Post created:', post);
-        this.loadPostsWithCommentsAndReplies();
-      },
-      error: err => console.error('Error creating post:', err)
-    });
+  addPost(): void {
+    this.router.navigate(['/add-post']);
   }
 
   deletePost(postId: string): void {
@@ -167,6 +164,11 @@ export class PostListComponent implements OnInit {
       },
       error: err => console.error('Error deleting post:', err)
     });
+  }
+
+  viewPost(post: Post): void {
+    // TODO: Implement post detail view (e.g., open dialog or navigate to detail page)
+    alert('View post: ' + post.title);
   }
 }
 //post-list.component.ts

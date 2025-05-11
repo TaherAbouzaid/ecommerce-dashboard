@@ -22,7 +22,7 @@ import { Ripple } from 'primeng/ripple';
 import { MessageService } from 'primeng/api';
 import { MenuItem } from 'primeng/api';
 import { Breadcrumb } from 'primeng/breadcrumb';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { Select, SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
@@ -92,6 +92,7 @@ existingVariants: Variant[] = [];
     private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
+    private router: Router,
 
 
 
@@ -480,6 +481,9 @@ existingVariants: Variant[] = [];
           summary: 'Success',
           detail: 'Product updated successfully'
         });
+        setTimeout(() => {
+          this.router.navigate(['/products']);
+        }, 1200);
       } else {
         await this.productService.addProduct(
           productData as Product,
@@ -492,6 +496,9 @@ existingVariants: Variant[] = [];
         });
         this.productForm.reset();
         this.variants.clear();
+        setTimeout(() => {
+          this.router.navigate(['/products']);
+        }, 1200);
       }
       this.updateFormValidity();
       this.cdr.markForCheck();

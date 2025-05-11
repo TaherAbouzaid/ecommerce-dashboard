@@ -8,7 +8,7 @@ export interface Post {
   views: number;
   likesCount: number;
   commentIds: string[];
-  
+  image?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

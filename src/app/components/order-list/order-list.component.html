@@ -1,7 +1,9 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
 <div class="card">
     <p-table [value]="(orders$ | async) ?? []" [loading]="loading" [paginator]="true" [rows]="10"
         [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} orders"
-        [rowsPerPageOptions]="[10,25,50]" styleClass="p-datatable-gridlines">
+        styleClass="p-datatable-gridlines">
         <ng-template pTemplate="header">
             <tr>
                 <th>Order ID</th>
@@ -20,12 +22,23 @@
                 <td>{{order.totalAmount | currency:'EGP'}}</td>
                 <td>{{order.paymentMethod}}</td>
                 <td>
-                    <p-tag [severity]="getStatusSeverity(order.status)" [value]="getStatusLabel(order.status)"></p-tag>
+                    <p-dropdown
+                      [options]="statusOptions"
+                      [(ngModel)]="order.status"
+                      (onChange)="updateOrderStatus(order, $event.value)"
+                      [disabled]="loading"
+                      styleClass="w-full"
+                      optionLabel="label"
+                      optionValue="value"
+                      [scrollHeight]="'150px'"
+                      appendTo="body"
+                    ></p-dropdown>
                 </td>
                 <td>{{order.createdAt | date:'medium'}}</td>
                 <td>
                     <button pButton icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
                         [routerLink]="['/orders', order.id]"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteOrder(order.id)"></button>
                 </td>
             </tr>
         </ng-template>

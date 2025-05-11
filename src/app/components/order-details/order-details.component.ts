@@ -36,10 +36,10 @@ export class OrderDetailsComponent implements OnInit {
   order: OrderDisplay | null = null;
   selectedStatus: OrderStatus = 'pending';
   statusOptions = [
-    { label: 'قيد الانتظار', value: 'pending' },
-    { label: 'تم الشحن', value: 'shipped' },
-    { label: 'تم التوصيل', value: 'delivered' },
-    { label: 'ملغي', value: 'cancelled' }
+    { label: 'Pending', value: 'pending' },
+    { label: 'Shipped', value: 'shipped' },
+    { label: 'Delivered', value: 'delivered' },
+    { label: 'Cancelled', value: 'cancelled' }
   ];
 
   constructor(
@@ -127,23 +127,11 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   getStatusLabel(status: OrderStatus): string {
-    switch (status) {
-      case 'pending':
-        return 'قيد الانتظار';
-      case 'shipped':
-        return 'تم الشحن';
-      case 'delivered':
-        return 'تم التوصيل';
-      case 'cancelled':
-        return 'ملغي';
-      default:
-        return status;
-    }
+    return status;
   }
 
   updateOrderStatus(orderId: string, status: OrderStatus): void {
     if (!orderId) return;
-    
     this.loading = true;
     this.orderService.updateOrderStatus(orderId, status).subscribe({
       next: () => {
@@ -152,7 +140,10 @@ export class OrderDetailsComponent implements OnInit {
           summary: 'نجاح',
           detail: 'تم تحديث حالة الطلب بنجاح'
         });
-        this.loadOrder(); // Reload order data
+        if (this.order) {
+          this.order.status = status;
+        }
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error updating order status:', error);

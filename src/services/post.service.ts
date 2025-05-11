@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../app/models/post';
 import { FirebaseService } from './firebase.service';
+import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
 
-  constructor(private firebaseService: FirebaseService) {}
+  constructor(private firebaseService: FirebaseService, private storage: Storage) {}
   
   getAllPosts(): Observable<Post[]> {
     return this.firebaseService.getAllPosts();
@@ -37,5 +38,14 @@ export class PostService {
   
   incrementPostViews(postId: string): Observable<void> {
     return this.firebaseService.incrementPostViews(postId);
+  }
+  
+  async uploadImage(file: File, path: string): Promise<string> {
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Only image files are allowed.');
+    }
+    const storageRef = ref(this.storage, path);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
   }
 }

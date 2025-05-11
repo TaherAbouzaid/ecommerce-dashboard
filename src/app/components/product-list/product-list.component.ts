@@ -82,22 +82,19 @@ interface ExportColumn {
 })
 export class ProductListComponent implements OnInit {
   products: any[] = [];
+  product: any = {};
   productDialog: boolean = false;
-  product!: Product;
-  // catagory: Category[] = [];
+  submitted: boolean = false;
+  selectedProducts: any[] = [];
+  statuses: any[] = [];
+  categories: any[] = [];
+  subCategories: any[] = [];
 
+  @ViewChild('dt') dt!: Table;
 
-    selectedProducts!: Product[] | null;
+  cols!: Column[];
 
-    submitted: boolean = false;
-
-    statuses!: any[];
-
-    @ViewChild('dt') dt!: Table;
-
-    cols!: Column[];
-
-    exportColumns!: ExportColumn[];
+  exportColumns!: ExportColumn[];
   firestore: any;
   items: MenuItem[] = [];
 
@@ -113,11 +110,14 @@ export class ProductListComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private cd: ChangeDetectorRef,
     private router: Router,
-    // private categoryService:CategoryService
-
+    private categoryService: CategoryService
   ) {
-
-   }
+    this.statuses = [
+      { label: 'INSTOCK', value: 'INSTOCK' },
+      { label: 'LOWSTOCK', value: 'LOWSTOCK' },
+      { label: 'OUTOFSTOCK', value: 'OUTOFSTOCK' }
+    ];
+  }
 
   exportCSV() {
     this.dt.exportCSV();
@@ -128,15 +128,10 @@ export class ProductListComponent implements OnInit {
 ngOnInit() {
 
   this.loadDemoData();
-    // this.loadCategories();
+    this.loadCategories();
+    this.loadSubCategories();
 
     console.log(this.loadDemoData)
-
-    // this.categoryService.getCategories().subscribe((categories) => {
-    // this.catagory = categories;
-    // })
-
-
 
     this.items = [
       { icon: 'pi pi-home', route: '/' },
@@ -157,24 +152,23 @@ ngOnInit() {
         ...product,
         name: product.title?.en || 'No title',
         category: product.categoryId?.name?.en || 'No category',
+        categoryId: product.categoryId?.categoryId || '',
         subCategory: product.subCategoryId?.name?.en || 'No sub category',
+        subCategoryId: product.subCategoryId?.subcategoryId || '',
         inventoryStatus: this.getStatus(product.quantity || 0),
-        rating: product.ratingSummary?.average || 0
+        rating: product.ratingSummary?.average || 0,
+        updatedAt: product.updatedAt || null
       }));
       this.cd.markForCheck();
     });
 
-    this.statuses = [
-      { label: 'INSTOCK', value: 'instock' },
-      { label: 'LOWSTOCK', value: 'lowstock' },
-      { label: 'OUTOFSTOCK', value: 'outofstock' }
-    ];
-
     this.cols = [
       { field: 'name', header: 'Name' },
+      { field: 'updatedAt', header: 'Last Update' },
       { field: 'image', header: 'Image' },
       { field: 'price', header: 'Price' },
       { field: 'category', header: 'Category' },
+      { field: 'subCategory', header: 'Sub Category' },
       { field: 'rating', header: 'Reviews' },
       { field: 'inventoryStatus', header: 'Status' }
     ];
@@ -300,17 +294,18 @@ get productName():string{
 
 
 
-filterGlobal(event: Event, stringVal: string) {
-  const inputElement = event.target as HTMLInputElement;
-  if (inputElement) {
-    this.dt.filterGlobal(inputElement.value, stringVal);
+filterGlobal(event: Event, matchMode: string) {
+  const target = event.target as HTMLInputElement;
+  if (target) {
+    this.dt.filterGlobal(target.value, matchMode);
   }
 }
 
-filterColumn(event: Event, field: string, mode: string) {
-  const inputElement = event.target as HTMLInputElement;
-  if (inputElement) {
-    this.dt.filter(inputElement.value, field, mode);
+filterColumn(value: any, field: string, mode: string) {
+  if (value === null || value === undefined) {
+    this.dt.filter(null, field, mode);
+  } else {
+    this.dt.filter(value, field, mode);
   }
 }
 createProduct(): void {
@@ -318,17 +313,56 @@ createProduct(): void {
 }
 
 
-// loadCategories() {
-//   this.firestore.collection('categories').valueChanges({ idField: 'id' }).subscribe((data: Category[]) => {
-//     this.catagory = data;
-//   });
-// }
+loadCategories() {
+  this.categoryService.getCategories().subscribe({
+    next: (categories) => {
+      this.categories = categories.map(cat => ({
+        label: cat.name?.en || 'Unknown',
+        value: cat.categoryId
+      }));
+    },
+    error: (error) => {
+      console.error('Error loading categories:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to load categories'
+      });
+    }
+  });
+}
 
+loadSubCategories(categoryId?: string) {
+  this.categoryService.getSubcategories().subscribe({
+    next: (subCategories) => {
+      let filteredSubCategories = subCategories;
+      if (categoryId) {
+        filteredSubCategories = subCategories.filter(subCat => subCat.parentCategoryId === categoryId);
+      }
+      this.subCategories = filteredSubCategories.map((subCat: any) => ({
+        label: subCat.name?.en || 'Unknown',
+        value: subCat.subcategoryId
+      }));
+    },
+    error: (error: any) => {
+      console.error('Error loading subcategories:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to load subcategories'
+      });
+    }
+  });
+}
 
-// getCategoryName(categoryId: string): string {
-//   const category = this.catagory.find(cat => cat.id === categoryId);
-//   return category ? category.name?.en : 'No category';
-// }
+onCategoryChange(event: any) {
+  this.loadSubCategories(event.value);
+  this.filterColumn(event.value, 'categoryId', 'equals');
+}
+
+onSubCategoryChange(event: any) {
+  this.filterColumn(event.value, 'subCategoryId', 'equals');
+}
 
 
 
