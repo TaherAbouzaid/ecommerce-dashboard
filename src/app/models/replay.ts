@@ -1,4 +1,3 @@
-
 import { Timestamp } from 'firebase/firestore';
 
 export interface Reply {
@@ -7,6 +6,7 @@ export interface Reply {
     userId: string;
     content: string;
     likesCount: number;
+    likedBy: string[];
     createdAt: Timestamp;
     updatedAt: Timestamp;
   }

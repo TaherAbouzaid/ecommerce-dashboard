@@ -5,6 +5,7 @@ export interface Category {
   id: string;
   categoryId: string;
   name: LocalizedString;
+  slug: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

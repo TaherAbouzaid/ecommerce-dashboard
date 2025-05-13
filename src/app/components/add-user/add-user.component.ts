@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { UserService } from '../../../services/user.service';
+import { UserService } from '../../services/user/user.service';
 // import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Storage } from '@angular/fire/storage';
 import { PasswordModule } from 'primeng/password';
@@ -37,7 +37,6 @@ export class AddUserComponent {
   selectedFile: File | null = null;
 
   roles = [
-    { label: 'Main Admin', value: 'main admin' },
     { label: 'Admin', value: 'admin' },
     { label: 'Shop Manager', value: 'shop manager' },
     { label: 'Vendor', value: 'vendor' },

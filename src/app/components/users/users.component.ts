@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../services/user.service';
+import { UserService } from '../../services/user/user.service';
 import { User } from '../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -20,7 +20,7 @@ import { ConfirmationService } from 'primeng/api';
     FormsModule,
     ButtonModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css'],
@@ -43,7 +43,7 @@ export class UsersComponent implements OnInit {
       this.users = data;
       this.originalUsers = JSON.parse(JSON.stringify(data));
 
-      this.users.forEach(user => {
+      this.users.forEach((user) => {
         if (!user.fullName) {
           console.warn(`User with ID: ${user.userId} is missing fullName`);
         }
@@ -52,7 +52,6 @@ export class UsersComponent implements OnInit {
       console.log('Loaded Users:', this.users);
     });
   }
-
 
   saveChanges() {
     const promises = [];
@@ -65,7 +64,8 @@ export class UsersComponent implements OnInit {
 
       const updatedFields: Partial<User> = {};
 
-      if (current.fullName !== original.fullName) updatedFields.fullName = current.fullName;
+      if (current.fullName !== original.fullName)
+        updatedFields.fullName = current.fullName;
       if (current.email !== original.email) updatedFields.email = current.email;
       if (current.phone !== original.phone) updatedFields.phone = current.phone;
       if (current.role !== original.role) updatedFields.role = current.role;
@@ -74,7 +74,10 @@ export class UsersComponent implements OnInit {
         const userRef = doc(this.firestore, `users/${current.userId}`);
         const updatePromise = updateDoc(userRef, updatedFields)
           .then(() => {
-            console.log(`Updated user ${current.fullName || 'Unknown'}:`, updatedFields);
+            console.log(
+              `Updated user ${current.fullName || 'Unknown'}:`,
+              updatedFields
+            );
             this.originalUsers[i] = { ...current };
           })
           .catch((error) => {
@@ -102,30 +105,34 @@ export class UsersComponent implements OnInit {
       });
   }
 
-
   deleteSelectedUsers() {
-    const selectedUsers = this.users.filter(user => user.selected);
-    const promises = selectedUsers.map(user => {
+    const selectedUsers = this.users.filter((user) => user.selected);
+    const promises = selectedUsers.map((user) => {
       const userRef = doc(this.firestore, `users/${user.userId}`);
       return deleteDoc(userRef)
         .then(() => {
-          console.log(`User ${user.fullName || 'Unknown User'} deleted successfully`);
+          console.log(
+            `User ${user.fullName || 'Unknown User'} deleted successfully`
+          );
         })
-        .catch(error => {
-          console.error(`Error deleting user ${user.fullName || 'Unknown User'}:`, error);
+        .catch((error) => {
+          console.error(
+            `Error deleting user ${user.fullName || 'Unknown User'}:`,
+            error
+          );
         });
     });
 
     Promise.all(promises)
       .then(() => {
-        this.users = this.users.filter(user => !user.selected);
+        this.users = this.users.filter((user) => !user.selected);
         this.messageService.add({
           severity: 'success',
           summary: 'Deleted',
           detail: `${selectedUsers.length} user(s) deleted successfully`,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -133,7 +140,7 @@ export class UsersComponent implements OnInit {
         });
       });
   }
-  
+
   confirmDeleteSelected() {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete the selected users?',
@@ -143,7 +150,7 @@ export class UsersComponent implements OnInit {
       rejectLabel: 'No',
       accept: () => {
         this.deleteSelectedUsers();
-      }
+      },
     });
   }
 

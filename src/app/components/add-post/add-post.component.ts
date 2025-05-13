@@ -1,15 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
-import { PostService } from '../../../services/post.service';
+import { PostService } from '../../services/post/post.service';
 import { CommonModule } from '@angular/common';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-add-post',
   templateUrl: './add-post.component.html',
   styleUrls: ['./add-post.component.css'],
-  imports:[CommonModule,ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule],
 })
 export class AddPostComponent implements OnInit {
   postForm: FormGroup;
@@ -20,12 +25,13 @@ export class AddPostComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private postService: PostService,
-    private router: Router
+    private router: Router,
+    public auth: Auth
   ) {
     this.postForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       content: ['', [Validators.required, Validators.minLength(20)]],
-      image: [null]
+      image: [null],
     });
   }
 
@@ -36,7 +42,7 @@ export class AddPostComponent implements OnInit {
       this.postForm.patchValue({
         title: post.title,
         content: post.content,
-        image: post.image
+        image: post.image,
       });
     }
   }
@@ -46,34 +52,45 @@ export class AddPostComponent implements OnInit {
       return;
     }
 
+    const currentUser = this.auth.currentUser;
+    if (!currentUser) {
+      this.errorMessage = 'You must be logged in to create a post';
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
 
     const post = history.state.post;
-    const authorId = 'sample_user_6'; // Replace with actual user ID
-
     const postData = {
       title: this.postForm.value.title,
       content: this.postForm.value.content,
       image: this.postForm.value.image,
-      authorId: authorId,
+      authorId: currentUser.uid,
       views: 0,
       likesCount: 0,
-      commentIds: []
+      commentIds: [],
+      likedBy: []
     };
 
     if (post) {
-      this.postService.updatePost(post.postId, { ...postData, image: this.postForm.value.image }).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.router.navigate(['/posts']);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = 'An error occurred while updating the post. Please try again.';
-          console.error('Error updating post:', error);
-        }
-      });
+      this.postService
+        .updatePost(post.postId, {
+          ...postData,
+          image: this.postForm.value.image,
+        })
+        .subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.router.navigate(['/posts']);
+          },
+          error: (error) => {
+            this.isLoading = false;
+            this.errorMessage =
+              'An error occurred while updating the post. Please try again.';
+            console.error('Error updating post:', error);
+          },
+        });
     } else {
       this.postService.createPost(postData).subscribe({
         next: (createdPost) => {
@@ -82,9 +99,10 @@ export class AddPostComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = 'An error occurred while creating the post. Please try again.';
+          this.errorMessage =
+            'An error occurred while creating the post. Please try again.';
           console.error('Error creating post:', error);
-        }
+        },
       });
     }
   }

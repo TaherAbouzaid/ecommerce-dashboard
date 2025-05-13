@@ -20,7 +20,7 @@ export interface User {
   fullName: string;
   email: string;
   phone: string;
-  profileImage: string;
+  imageUrl: string;
   role: UserRole;
   address: Address[];
   wishlist: string[];

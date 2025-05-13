@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
-
+import { Auth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-side-bar',
@@ -14,7 +15,20 @@ export class SideBarComponent implements OnInit {
 
     items!: MenuItem[];
 
+    constructor(
+      private auth: Auth,
+      private router: Router
+    ) {}
 
+    async handleLogout() {
+      try {
+        await this.auth.signOut();
+        localStorage.removeItem('userUID');
+        this.router.navigate(['/']);
+      } catch (error) {
+        console.error('Error during logout:', error);
+      }
+    }
 
     ngOnInit() {
     this.items = [
@@ -27,69 +41,54 @@ export class SideBarComponent implements OnInit {
     label: 'Products',
     icon: 'pi pi-box',
     items: [
-      { label: 'All Products', icon: 'pi pi-list', routerLink: ['/products'] },
-      { label: 'Add Product', icon: 'pi pi-plus', routerLink: ['/add-product'] },
-      { label: 'Orders', icon: 'pi pi-shopping-cart', routerLink: ['/orders'] },
-      { label: 'Stock', icon: 'pi pi-briefcase', routerLink: ['/stock'] },
+      { label: 'All Products', icon: 'pi pi-list', routerLink: ['/dashboard/products'] },
+      { label: 'Add Product', icon: 'pi pi-plus', routerLink: ['/dashboard/add-product'] },
+      { label: 'Orders', icon: 'pi pi-shopping-cart', routerLink: ['/dashboard/orders'] },
+      { label: 'Stock', icon: 'pi pi-briefcase', routerLink: ['/dashboard/stock'] },
       
     ]
   },
   {
     label: 'Categories',
     icon: 'pi pi-tags',
-    items: [
-      {
-        label: 'All Categories', icon: 'pi pi-list', routerLink: ['/category'] },
-      { label: 'Add Category', icon: 'pi pi-plus', routerLink: ['/add-category'] }
-    ]
+    routerLink: ['/dashboard/category'] 
   },
   {
     label: 'Brands',
     icon: 'pi pi-tag',
-    items: [
-      { label: 'All Brands', icon: 'pi pi-list', routerLink: ['/brand'] },
-      { label: 'Add Brand', icon: 'pi pi-plus', routerLink: ['/add-brand'] }
-    ]
+    routerLink: ['/dashboard/brand']
+    
   },
   {
     label: 'Users',
     icon: 'pi pi-users',
     items: [
-      { label: 'All Users', icon: 'pi pi-list', routerLink: ['/users'] },
-      { label: 'Add User', icon: 'pi pi-user-plus', routerLink: ['/add-user'] },
+      { label: 'All Users', icon: 'pi pi-list', routerLink: ['/dashboard/users'] },
+      { label: 'Add User', icon: 'pi pi-user-plus', routerLink: ['/dashboard/add-user'] },
     ]
   },
   {
     label: 'Reports',
     icon: 'pi pi-chart-line',
-    routerLink: ['/reports']
+    routerLink: ['/dashboard/reports']
   },
   {
     label:"Posts",
     items:[
 
-      {label:'Posts',icon:'pi pi-list',routerLink:['/list-posts']},
-      {label:'Add Post',icon:'pi pi-list',routerLink:['/add-post']}
+      {label:'Posts',icon:'pi pi-list',routerLink:['/dashboard/list-posts']},
+      {label:'Add Post',icon:'pi pi-list',routerLink:['/dashboard/add-post']}
     ]
 
     ,
     icon: 'pi pi-file',
-    routerLink: ['/list-posts']
+    routerLink: ['/dashboard/list-posts']
   },
-  {
-    label: 'Messages',
-    icon: 'pi pi-comments',
-    routerLink: ['/messages']
-  },
-  {
-    label: 'Settings',
-    icon: 'pi pi-cog',
-    routerLink: ['/settings']
-  },
+
   {
     label: 'Logout',
     icon: 'pi pi-sign-out',
-    routerLink: ['/logout']
+    command: () => this.handleLogout()
   }
 ];
   }

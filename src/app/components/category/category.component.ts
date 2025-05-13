@@ -13,6 +13,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToolbarModule } from 'primeng/toolbar';
+import { Timestamp } from 'firebase/firestore';
+import { ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-category',
@@ -31,6 +33,7 @@ import { ToolbarModule } from 'primeng/toolbar';
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.css'],
   providers: [ConfirmationService, MessageService],
+  encapsulation: ViewEncapsulation.None
 })
 export class CategoryComponent implements OnInit {
   categoryForm: FormGroup;
@@ -53,6 +56,7 @@ export class CategoryComponent implements OnInit {
         en: ['', Validators.required],
         ar: ['', Validators.required],
       }),
+      slug: ['', Validators.required]
     });
 
     this.subcategoryForm = this.fb.group({
@@ -100,6 +104,7 @@ export class CategoryComponent implements OnInit {
         en: category.name.en,
         ar: category.name.ar,
       },
+      slug: category.slug
     });
     this.displayCategoryDialog = true;
   }
@@ -118,7 +123,15 @@ export class CategoryComponent implements OnInit {
 
   saveCategory() {
     if (this.categoryForm.invalid) return;
-    const categoryData = this.categoryForm.value;
+    const formValue = this.categoryForm.value;
+    const categoryData: Category = {
+      id: this.selectedCategory?.id || '',
+      categoryId: this.selectedCategory?.categoryId || '',
+      name: formValue.name,
+      slug: formValue.slug,
+      createdAt: this.selectedCategory?.createdAt || Timestamp.now(),
+      updatedAt: Timestamp.now()
+    };
 
     if (this.selectedCategory) {
       this.categoryService.updateCategory(this.selectedCategory.categoryId, categoryData)

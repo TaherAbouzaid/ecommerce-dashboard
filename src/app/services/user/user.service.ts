@@ -11,7 +11,7 @@ import {
   getDoc,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { User } from '../app/models/user.model';
+import { User } from '../../models/user.model';
 import {
   Storage,
   ref,
@@ -19,6 +19,10 @@ import {
   getDownloadURL,
 } from '@angular/fire/storage';
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { deleteApp } from 'firebase/app';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -68,27 +72,47 @@ export class UserService {
     role: string,
     imageUrl: string
   ) {
-    const userCredential = await createUserWithEmailAndPassword(
-      this.auth,
-      email,
-      password
-    );
-    const uid = userCredential.user.uid;
-
-    await setDoc(doc(this.firestore, 'users', uid), {
-      fullName,
-      email,
-      role,
-      imageUrl,
-      address: '',
-      phone: '',
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
-      wishlist: [],
-      selected: false,
-    });
-
-    return uid;
+    try {
+      const currentUser = this.auth.currentUser;
+      if (!currentUser) throw new Error('No authenticated user');
+  
+      // ✅ 1. إنشاء نسخة تانية من Firebase app
+      const secondaryApp = initializeApp(environment.firebase, 'Secondary');
+      const secondaryAuth = getAuth(secondaryApp);
+  
+      // ✅ 2. إنشاء المستخدم الجديد
+      const userCredential = await createUserWithEmailAndPassword(
+        secondaryAuth,
+        email,
+        password
+      );
+      const uid = userCredential.user.uid;
+  
+      // ✅ 3. تسجيل الخروج من النسخة التانية
+      await secondaryAuth.signOut();
+  
+      // ✅ 4. حذف النسخة التانية
+      await deleteApp(secondaryApp);
+  
+      // ✅ 5. إضافة بيانات المستخدم الجديد إلى Firestore
+      await setDoc(doc(this.firestore, 'users', uid), {
+        fullName,
+        email,
+        role,
+        imageUrl,
+        address: '',
+        phone: '',
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+        wishlist: [],
+        selected: false,
+      });
+  
+      return uid;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   }
 
   async updateUser(uid: string, userData: Partial<User>) {

@@ -6,6 +6,7 @@ export interface Comment {
     content: string;
     likesCount: number;
     replyIds: string[];
+    likedBy: string[];
     createdAt: Timestamp;
     updatedAt: Timestamp;
   }

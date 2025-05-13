@@ -28,6 +28,7 @@
       <tr>
         <th>Name (English)</th>
         <th>Name (Arabic)</th>
+        <th>Slug</th>
         <th>Actions</th>
       </tr>
     </ng-template>
@@ -35,6 +36,7 @@
       <tr>
         <td>{{ category.name.en }}</td>
         <td>{{ category.name.ar }}</td>
+        <td>{{ category.slug }}</td>
         <td>
           <button
             pButton
@@ -96,6 +98,9 @@
   [(visible)]="displayCategoryDialog"
   [modal]="true"
   [closable]="false"
+  [style]="{width: '600px'}"
+  [draggable]="false"
+  [resizable]="false"
 >
   <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
     <div formGroupName="name">
@@ -107,6 +112,11 @@
         <label for="name-ar">Name (Arabic)</label>
         <input id="name-ar" type="text" pInputText formControlName="ar" />
       </div>
+    </div>
+
+    <div class="p-field">
+      <label for="slug">Slug</label>
+      <input id="slug" type="text" pInputText formControlName="slug" />
     </div>
 
     <div class="p-dialog-footer">
@@ -133,6 +143,9 @@
   [(visible)]="displaySubcategoryDialog"
   [modal]="true"
   [closable]="false"
+  [style]="{width: '600px'}"
+  [draggable]="false"
+  [resizable]="false"
 >
   <form [formGroup]="subcategoryForm" (ngSubmit)="saveSubcategory()">
     <div formGroupName="name">

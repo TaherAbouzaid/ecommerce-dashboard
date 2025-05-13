@@ -12,38 +12,110 @@ import { AddUserComponent } from './components/add-user/add-user.component';
 import { LoginComponent } from './components/login/login.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { OrderListComponent } from './components/order-list/order-list.component';
-// import { AuthRoleGuard } from './guard/role.guard';
-import { RoleGuard } from './guard/guards/auth.guard';
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
 import { PostDetailsComponent } from './components/post-details/post-details.component';
-// import { RoleGuard } from './guard/guards/auth.guard';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { AuthGuard } from './guards/auth.guard';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 export const routes: Routes = [
   {
     path: '',
+    component: LoginComponent
+  },
+  {
+    path: 'dashboard',
     component: MainComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['admin', 'shop manager', 'vendor', 'Author'] },
     children: [
+      {
+        path: 'profile',
+        component: UserProfileComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager', 'vendor', 'Author'] }
+      },
       {
         path: 'products',
         component: ProductListComponent,
-        // canActivate: [RoleGuard],
-        data: { expectedRoles: ['admin', 'shopManager'] },
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager', 'vendor'] }
       },
-      { path: 'orders/:id', component: OrderDetailsComponent },
-      { path: 'add-product', component: AddProductComponent },
-      // { path: 'test', component: TestComponent },
-      { path: 'users', component: UsersComponent },
-      { path: 'add-user', component: AddUserComponent },
-      // { path: 'add-category', component: AddCategoryComponent },
-      { path: 'brand', component: BrandComponent },
-      { path: 'category', component: CategoryComponent },
-      { path: 'products/edit/:id', component: AddProductComponent },
-      { path: 'orders', component: OrderListComponent },
-      // { path: 'add-category', component: AddCategoryComponent },
-      { path: 'list-posts', component: PostListComponent },
-      { path: 'comment-list', component: CommentListComponent },
-      { path: 'add-post', component: AddPostComponent },
-      { path: 'post-details/:postId', component: PostDetailsComponent },
-    ],
+      { 
+        path: 'orders/:id', 
+        component: OrderDetailsComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager'] }
+      },
+      { 
+        path: 'add-product', 
+        component: AddProductComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager', 'vendor'] }
+      },
+      { 
+        path: 'users', 
+        component: UsersComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin'] }
+      },
+      { 
+        path: 'add-user', 
+        component: AddUserComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin'] }
+      },
+      { 
+        path: 'brand', 
+        component: BrandComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager'] }
+      },
+      { 
+        path: 'category', 
+        component: CategoryComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager'] }
+      },
+      { 
+        path: 'products/edit/:id', 
+        component: AddProductComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager'] }
+      },
+      { 
+        path: 'orders', 
+        component: OrderListComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager'] }
+      },
+      { 
+        path: 'list-posts', 
+        component: PostListComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'Author'] }
+      },
+      { 
+        path: 'post-details/:postId', 
+        component: PostDetailsComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'Author'] }
+      },
+      { 
+        path: 'comment-list', 
+        component: CommentListComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'Author'] }
+      },
+      { 
+        path: 'add-post', 
+        component: AddPostComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'Author'] }
+      }
+    ]
   },
+  { path: 'unauthorized', component: UnauthorizedComponent },
+  { path: '404', component: NotFoundComponent },
+  { path: '**', redirectTo: '404' }
 ];

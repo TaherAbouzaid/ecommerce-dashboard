@@ -4,7 +4,7 @@ import { BrandService } from './../../services/brand/brand.service';
 import { Brand } from './../../models/brands';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormsModule, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
-import { ProductService } from '../../services/Product/product.service';
+import { ProductService } from '../../services/product/product.service';
 import { CommonModule } from '@angular/common';
 import { Product, Variant } from '../../models/products';
 import { FloatLabelModule } from 'primeng/floatlabel';

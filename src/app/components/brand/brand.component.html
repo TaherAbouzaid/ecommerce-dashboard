@@ -94,23 +94,23 @@
       </ng-template>
   </p-table>
 
-  <p-dialog header="Brand Form" [(visible)]="brandDialog" [modal]="true" [closable]="false" [style]="{ width: '400px' }">
+  <p-dialog header="Brand Form" [(visible)]="brandDialog" [modal]="true" [closable]="false" [style]="{ width: '600px' }" [draggable]="false" [resizable]="false">
     <form [formGroup]="brandForm" (ngSubmit)="onSubmit()">
-      <div class="field">
+      <div class="p-field">
         <label for="nameEn">Name (EN)</label>
         <input pInputText formControlName="nameEn" id="nameEn" />
         <small class="p-error" *ngIf="submitted && brandForm.controls['nameEn'].invalid">Name is required.</small>
       </div>
 
-      <div class="field">
+      <div class="p-field my-4">
         <label for="nameAr">Name (AR)</label>
         <input pInputText formControlName="nameAr" id="nameAr" />
         <small class="p-error" *ngIf="submitted && brandForm.controls['nameAr'].invalid">Name is required.</small>
       </div>
 
-      <div class="flex justify-content-end mt-4">
-        <button pButton label="Cancel" class="p-button-text mr-2" (click)="hideDialog()" type="button"></button>
-        <button pButton label="Save" type="submit" [disabled]="brandForm.invalid"></button>
+      <div class="p-dialog-footer">
+        <button pButton label="Cancel" icon="pi pi-times" (click)="hideDialog()" class="p-button-text" type="button"></button>
+        <button pButton label="Save" icon="pi pi-check" type="submit" [disabled]="brandForm.invalid"></button>
       </div>
     </form>
   </p-dialog>

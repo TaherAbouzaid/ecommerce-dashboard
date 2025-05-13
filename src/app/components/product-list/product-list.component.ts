@@ -1,7 +1,7 @@
 import { Category } from './../../models/category';
 import { Product } from './../../models/products';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { ProductService } from '../../services/Product/product.service';
+import { ProductService } from '../../services/product/product.service';
 import { CommonModule } from '@angular/common';
 
 
