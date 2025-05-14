@@ -26,6 +26,7 @@ import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { Select, SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
+import { Auth } from '@angular/fire/auth';
 
 
 
@@ -74,7 +75,7 @@ export class AddProductComponent implements OnInit {
   subcategory: Subcategory[]=[]
   isFormInvalid: boolean = true;
   productId: string | null = null;
-isEditMode = false;
+  isEditMode = false;
 existingVariants: Variant[] = [];
 
 
@@ -87,16 +88,13 @@ existingVariants: Variant[] = [];
     private fb: FormBuilder,
     private productService: ProductService,
     private messageService: MessageService,
-    // private router: Router,
     private brandService: BrandService,
     private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-
-
-
-    ) {
+    private auth: Auth
+  ) {
       this.productForm = this.fb.group({
         productType: ['simple'],
         title: this.fb.group({
@@ -423,7 +421,6 @@ existingVariants: Variant[] = [];
       return;
     }
 
-
     variants.setValidators(originalValidators);
     variants.updateValueAndValidity();
 
@@ -456,19 +453,14 @@ existingVariants: Variant[] = [];
       productData.tags = [];
     }
 
-    // try {
-    //   const productId = await this.productService.addProduct(productData as Product, variantsToSave as Variant[]);
-    //   this.messageService.add({ severity: 'success', summary: 'Successfully', detail: 'Product added successfully' });
-    //   this.productForm.reset();
-    //   this.variants.clear();
-    //   this.updateFormValidity();
-    //   this.cdr.markForCheck();
-    // } catch (error) {
-    //   this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add product: '});
-    // }
+    // Set vendorId from current user
+    const currentUser = this.auth.currentUser;
+    if (!currentUser) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User not authenticated' });
+      return;
+    }
+    productData.vendorId = currentUser.uid;
 
-
-    //.........update..........//
     try {
       if (this.isEditMode && this.productId) {
         await this.productService.updateProductWithVariants(
@@ -482,7 +474,7 @@ existingVariants: Variant[] = [];
           detail: 'Product updated successfully'
         });
         setTimeout(() => {
-          this.router.navigate(['/products']);
+          this.router.navigate(['/dashboard/products']);
         }, 1200);
       } else {
         await this.productService.addProduct(
@@ -497,7 +489,7 @@ existingVariants: Variant[] = [];
         this.productForm.reset();
         this.variants.clear();
         setTimeout(() => {
-          this.router.navigate(['/products']);
+          this.router.navigate(['/dashboard/products']);
         }, 1200);
       }
       this.updateFormValidity();
@@ -510,8 +502,6 @@ existingVariants: Variant[] = [];
           'Failed to update product' : 'Failed to add product'
       });
     }
-
-
   }
 
 

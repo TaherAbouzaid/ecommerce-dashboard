@@ -158,6 +158,6 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/orders']);
+    this.router.navigate(['/dashbord/orders']);
   }
 }

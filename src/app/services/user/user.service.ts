@@ -75,11 +75,10 @@ export class UserService {
     try {
       const currentUser = this.auth.currentUser;
       if (!currentUser) throw new Error('No authenticated user');
-  
       // ✅ 1. إنشاء نسخة تانية من Firebase app
       const secondaryApp = initializeApp(environment.firebase, 'Secondary');
       const secondaryAuth = getAuth(secondaryApp);
-  
+
       // ✅ 2. إنشاء المستخدم الجديد
       const userCredential = await createUserWithEmailAndPassword(
         secondaryAuth,
@@ -87,13 +86,13 @@ export class UserService {
         password
       );
       const uid = userCredential.user.uid;
-  
+
       // ✅ 3. تسجيل الخروج من النسخة التانية
       await secondaryAuth.signOut();
-  
+
       // ✅ 4. حذف النسخة التانية
       await deleteApp(secondaryApp);
-  
+
       // ✅ 5. إضافة بيانات المستخدم الجديد إلى Firestore
       await setDoc(doc(this.firestore, 'users', uid), {
         fullName,
@@ -107,7 +106,7 @@ export class UserService {
         wishlist: [],
         selected: false,
       });
-  
+
       return uid;
     } catch (error) {
       console.error('Error creating user:', error);

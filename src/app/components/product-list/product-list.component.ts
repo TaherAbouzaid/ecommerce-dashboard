@@ -3,7 +3,8 @@ import { Product } from './../../models/products';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product/product.service';
 import { CommonModule } from '@angular/common';
-
+import { Auth } from '@angular/fire/auth';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
@@ -39,9 +40,6 @@ interface ExportColumn {
     title: string;
     dataKey: string;
 }
-
-
-
 
 @Component({
   selector: 'app-product-list',
@@ -89,20 +87,15 @@ export class ProductListComponent implements OnInit {
   statuses: any[] = [];
   categories: any[] = [];
   subCategories: any[] = [];
+  userRole: string = '';
+  vendorId: string = '';
 
   @ViewChild('dt') dt!: Table;
 
   cols!: Column[];
 
   exportColumns!: ExportColumn[];
-  firestore: any;
   items: MenuItem[] = [];
-
-
-
-
-
-
 
   constructor(
     private productService: ProductService,
@@ -110,7 +103,9 @@ export class ProductListComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private cd: ChangeDetectorRef,
     private router: Router,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private auth: Auth,
+    private firestore: Firestore
   ) {
     this.statuses = [
       { label: 'INSTOCK', value: 'INSTOCK' },
@@ -119,35 +114,33 @@ export class ProductListComponent implements OnInit {
     ];
   }
 
-  exportCSV() {
-    this.dt.exportCSV();
-}
-
-
-
-ngOnInit() {
-
-  this.loadDemoData();
+  async ngOnInit() {
+    await this.loadUserData();
+    this.loadDemoData();
     this.loadCategories();
     this.loadSubCategories();
 
-    console.log(this.loadDemoData)
-
     this.items = [
-      { icon: 'pi pi-home', route: '/' },
-      { label: 'All Product', route: '/products' }
+      { icon: 'pi pi-home', route: '/dashboard' },
+      { label: 'All Product', route: '/dashboard/products' }
     ];
-
-
   }
 
-
-  // items: MenuItem[] | undefined;
-  home: MenuItem | undefined;
-
+  async loadUserData() {
+    const currentUser = this.auth.currentUser;
+    if (currentUser) {
+      const userRef = doc(this.firestore, `users/${currentUser.uid}`);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        this.userRole = userData['role'] || '';
+        this.vendorId = currentUser.uid;
+      }
+    }
+  }
 
   loadDemoData() {
-    this.productService.getProducts().subscribe((data) => {
+    this.productService.getProducts(this.userRole, this.vendorId).subscribe((data) => {
       this.products = data.map(product => ({
         ...product,
         name: product.title?.en || 'No title',
@@ -176,229 +169,177 @@ ngOnInit() {
     this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
   }
 
-
-
-// editProduct(productId: string): void {
-//   this.router.navigate(['/update-product', productId]);
-// }
-
-
-//...............update.....................
-editProduct(productId: string) {
-  this.router.navigate(['/products/edit', productId]);
-}
-//..................................................
-
-
-// deleteSelectedProducts() {
-//   this.confirmationService.confirm({
-//       message: 'Are you sure you want to delete the selected products?',
-//       header: 'Confirm',
-//       icon: 'pi pi-exclamation-triangle',
-//       accept: () => {
-//           if (this.selectedProducts) {
-//               this.products = this.products.filter(p => !this.selectedProducts!.includes(p));
-//           }
-//           this.selectedProducts = [];
-
-//           this.messageService.add({
-//               severity: 'success',
-//               summary: 'Successful',
-//               detail: 'Products Deleted',
-//               life: 3000
-//           });
-//       }
-//   });
-// }
-
-hideDialog() {
-  this.productDialog = false;
-  this.submitted = false;
+  exportCSV() {
+    this.dt.exportCSV();
 }
 
-deleteProduct(productId: string): void {
-    this.confirmationService.confirm({
-        message: 'Are you sure you want to delete ?',
-        header: 'Confirm',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.productService.deleteProduct(productId).then(() => {
-            this.products = this.products.filter((val) => val.id !==productId);
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Successful',
-                detail: 'Product Deleted',
-                life: 3000
+  // items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+
+  hideDialog() {
+    this.productDialog = false;
+    this.submitted = false;
+  }
+
+  deleteProduct(productId: string): void {
+      this.confirmationService.confirm({
+          message: 'Are you sure you want to delete ?',
+          header: 'Confirm',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.productService.deleteProduct(productId).then(() => {
+              this.products = this.products.filter((val) => val.id !==productId);
+              this.messageService.add({
+                  severity: 'success',
+                  summary: 'Successful',
+                  detail: 'Product Deleted',
+                  life: 3000
+              });
+            }).catch(error => {
+              alert('something went wrong');
+              console.error('Error deleting product:', error);
             });
-          }).catch(error => {
-            alert('something went wrong');
-            console.error('Error deleting product:', error);
-          });
-        }
-        }
-    );
-  }
-
-findIndexById(id: string): number {
-  let index = -1;
-  for (let i = 0; i < this.products.length; i++) {
-      if (this.products[i].id === id) {
-          index = i;
-          break;
-      }
-  }
-
-  return index;
-}
-
-// getCategoryName(category: string): string {
-//   const categoryMap: { [key: string]: string } = {
-//       'electronics': 'Electronics',
-//       'clothing': 'Clothing',
-//       'home': 'Home',
-//       'books': 'Books',
-//       // Add more categories as needed
-//   };
-//   return categoryMap[category] || category; // Return the mapped name or the original category if not found
-// }
-
-
-getSeverity(quantity: number): 'success' | 'warn' | 'danger' | 'secondary' {
-  if (quantity > 10) return 'success';
-  else if (quantity > 0) return 'warn';
-  else if (quantity === 0) return 'danger';
-  return 'secondary'; // Map 'unKnown' to 'secondary'
-}
-
-getStatus( quantity: number) {
-  if (quantity === 0) {
-      return 'outofstock';
-  }
-  else if (quantity < 5) {
-      return 'lowstock';
-  } else {
-      return 'instock';
-  }
-}
-
-
-getProductName(product: Product): string {
-  return product.title.en || 'Unknown Product';
-}
-
-get productName():string{
-  return this.product.title.en
-
-}
-
-
-
-
-filterGlobal(event: Event, matchMode: string) {
-  const target = event.target as HTMLInputElement;
-  if (target) {
-    this.dt.filterGlobal(target.value, matchMode);
-  }
-}
-
-filterColumn(value: any, field: string, mode: string) {
-  if (value === null || value === undefined) {
-    this.dt.filter(null, field, mode);
-  } else {
-    this.dt.filter(value, field, mode);
-  }
-}
-createProduct(): void {
-  this.router.navigate(['/add-product']);
-}
-
-
-loadCategories() {
-  this.categoryService.getCategories().subscribe({
-    next: (categories) => {
-      this.categories = categories.map(cat => ({
-        label: cat.name?.en || 'Unknown',
-        value: cat.categoryId
-      }));
-    },
-    error: (error) => {
-      console.error('Error loading categories:', error);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Failed to load categories'
-      });
+          }
+          }
+      );
     }
-  });
-}
 
-loadSubCategories(categoryId?: string) {
-  this.categoryService.getSubcategories().subscribe({
-    next: (subCategories) => {
-      let filteredSubCategories = subCategories;
-      if (categoryId) {
-        filteredSubCategories = subCategories.filter(subCat => subCat.parentCategoryId === categoryId);
-      }
-      this.subCategories = filteredSubCategories.map((subCat: any) => ({
-        label: subCat.name?.en || 'Unknown',
-        value: subCat.subcategoryId
-      }));
-    },
-    error: (error: any) => {
-      console.error('Error loading subcategories:', error);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Failed to load subcategories'
-      });
+  findIndexById(id: string): number {
+    let index = -1;
+    for (let i = 0; i < this.products.length; i++) {
+        if (this.products[i].id === id) {
+            index = i;
+            break;
+        }
     }
-  });
-}
 
-onCategoryChange(event: any) {
-  this.loadSubCategories(event.value);
-  this.filterColumn(event.value, 'categoryId', 'equals');
-}
+    return index;
+  }
 
-onSubCategoryChange(event: any) {
-  this.filterColumn(event.value, 'subCategoryId', 'equals');
-}
+  getSeverity(quantity: number): 'success' | 'warn' | 'danger' | 'secondary' {
+    if (quantity > 10) return 'success';
+    else if (quantity > 0) return 'warn';
+    else if (quantity === 0) return 'danger';
+    return 'secondary'; // Map 'unKnown' to 'secondary'
+  }
 
+  getStatus( quantity: number) {
+    if (quantity === 0) {
+        return 'outofstock';
+    }
+    else if (quantity < 5) {
+        return 'lowstock';
+    } else {
+        return 'instock';
+    }
+  }
 
+  getProductName(product: Product): string {
+    return product.title.en || 'Unknown Product';
+  }
 
+  get productName():string{
+    return this.product.title.en
 
-// get catName(catId:string) : string{
-//   const catagory =this.catagory.find((cat)=>{
-//     catagory?.cat===catId})
-//     return catagory ? (catagory.name.en || 'unknown category') : 'unknown category';
-//   }
+  }
 
-  // getCategoryName(catId: string): string {
-  //   const category = this.catagory.find((cat) => cat.categoryId === catId);
-  //   return category ? category.name.en : 'Unknown Category';
-  // }
+  filterGlobal(event: Event, matchMode: string) {
+    const target = event.target as HTMLInputElement;
+    if (target) {
+      this.dt.filterGlobal(target.value, matchMode);
+    }
+  }
 
+  filterColumn(value: any, field: string, mode: string) {
+    if (value === null || value === undefined) {
+      this.dt.filter(null, field, mode);
+    } else {
+      this.dt.filter(value, field, mode);
+    }
+  }
+  createProduct(): void {
+    this.router.navigate(['/dashboard/add-product']);
+  }
+
+  loadCategories() {
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories.map(cat => ({
+          label: cat.name?.en || 'Unknown',
+          value: cat.categoryId
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load categories'
+        });
+      }
+    });
+  }
+
+  loadSubCategories(categoryId?: string) {
+    this.categoryService.getSubcategories().subscribe({
+      next: (subCategories) => {
+        let filteredSubCategories = subCategories;
+        if (categoryId) {
+          filteredSubCategories = subCategories.filter(subCat => subCat.parentCategoryId === categoryId);
+        }
+        this.subCategories = filteredSubCategories.map((subCat: any) => ({
+          label: subCat.name?.en || 'Unknown',
+          value: subCat.subcategoryId
+        }));
+      },
+      error: (error: any) => {
+        console.error('Error loading subcategories:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load subcategories'
+        });
+      }
+    });
+  }
+
+  onCategoryChange(event: any) {
+    this.loadSubCategories(event.value);
+    this.filterColumn(event.value, 'categoryId', 'equals');
+  }
+
+  onSubCategoryChange(event: any) {
+    this.filterColumn(event.value, 'subCategoryId', 'equals');
+  }
 
   filterProducts(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.dt.filter(value, 'title.en', 'contains');
   }
-  
 
+  editProduct(productId: string): void {
+    this.router.navigate(['/dashboard/products/edit', productId]);
+  }
 
-
-
-
-
-// SearchProducts(event: any, stringVal: string) {
-//   const searchTerm = event.target.value.toLowerCase();
-//   this.products = this.products.filter((product) =>
-//     product.name.toLowerCase().includes(searchTerm)
-//   );
-//   if (searchTerm === '') {
-//     this.loadDemoData(); // Reload the original data if search term is empty
-//   }
-//   this.cd.markForCheck(); // Mark for check to update the view
+  async updateTrendingScores() {
+    try {
+      await this.productService.updateAllProductsTrendingScores();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Trending scores updated successfully'
+      });
+      // Reload the product list to show updated scores
+      this.loadDemoData();
+    } catch (error) {
+      console.error('Error updating trending scores:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to update trending scores'
+      });
+    }
+  }
 }
 
 

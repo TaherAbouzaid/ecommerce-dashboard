@@ -25,8 +25,8 @@ interface VendorInfo {
   ownerName: string;
   phone: string;
   email: string;
-  numberOfProducts: number;
-  numberOfSales: number;
+  productIds: string[];
+  salesProducts: string[];
   address: {
     street: string;
     city: string;
@@ -367,8 +367,8 @@ export class UserProfileComponent implements OnInit {
           await updateDoc(vendorRef, vendorData);
         } else {
           vendorData.createdAt = Timestamp.now();
-          vendorData.numberOfProducts = 0;
-          vendorData.numberOfSales = 0;
+          vendorData.salesProducts = [];
+          vendorData.productIds = [];
           await setDoc(vendorRef, vendorData);
         }
 

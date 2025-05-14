@@ -17,7 +17,8 @@ import { PostDetailsComponent } from './components/post-details/post-details.com
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotFoundComponent } from './components/not-found/not-found.component';
-
+import { AnalyticsComponent } from './components/analytics/analytics.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 export const routes: Routes = [
   {
     path: '',
@@ -30,6 +31,12 @@ export const routes: Routes = [
     data: { roles: ['admin', 'shop manager', 'vendor', 'Author'] },
     children: [
       {
+        path: '',
+        component: DashboardComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager', 'vendor', 'Author'] }
+      },
+      {
         path: 'profile',
         component: UserProfileComponent,
         canActivate: [AuthGuard],
@@ -41,77 +48,84 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'shop manager', 'vendor'] }
       },
-      { 
-        path: 'orders/:id', 
+      {
+        path: 'orders/:id',
         component: OrderDetailsComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'shop manager'] }
       },
-      { 
-        path: 'add-product', 
+      {
+        path: 'add-product',
         component: AddProductComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'shop manager', 'vendor'] }
       },
-      { 
-        path: 'users', 
+      {
+        path: 'users',
         component: UsersComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin'] }
       },
-      { 
-        path: 'add-user', 
+      {
+        path: 'add-user',
         component: AddUserComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin'] }
       },
-      { 
-        path: 'brand', 
+      {
+        path: 'brand',
         component: BrandComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'shop manager'] }
       },
-      { 
-        path: 'category', 
+      {
+        path: 'category',
         component: CategoryComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'shop manager'] }
       },
-      { 
-        path: 'products/edit/:id', 
+      {
+        path: 'products/edit/:id',
         component: AddProductComponent,
         canActivate: [AuthGuard],
-        data: { roles: ['admin', 'shop manager'] }
+        data: { roles: ['admin', 'shop manager', 'vendor'] }
       },
-      { 
-        path: 'orders', 
+      {
+        path: 'orders',
         component: OrderListComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'shop manager'] }
       },
-      { 
-        path: 'list-posts', 
+
+      {
+        path: 'list-posts',
         component: PostListComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'Author'] }
       },
-      { 
-        path: 'post-details/:postId', 
+      {
+        path: 'post-details/:postId',
         component: PostDetailsComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'Author'] }
       },
-      { 
-        path: 'comment-list', 
+      {
+        path: 'comment-list',
         component: CommentListComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'Author'] }
       },
-      { 
-        path: 'add-post', 
+      {
+        path: 'add-post',
         component: AddPostComponent,
         canActivate: [AuthGuard],
         data: { roles: ['admin', 'Author'] }
+      },
+      {
+        path: 'analytics',
+        component: AnalyticsComponent,
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'shop manager', 'vendor'] }
       }
     ]
   },

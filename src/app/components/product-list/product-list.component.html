@@ -32,17 +32,9 @@
 
 <div class="card">
   <p-toast />
-  <p-toolbar styleClass="mb-6">
-    <ng-template #start>
-      <p-button
-        label="New"
-        icon="pi pi-plus"
-        class="mr-2"
-        (onClick)="createProduct()"
-      />
-      <!-- <p-button severity="danger" label="Delete" icon="pi pi-trash" outlined
-          (onClick)="deleteSelectedProducts()"
-          [disabled]="!selectedProducts || !selectedProducts.length" />  -->
+  <p-toolbar styleClass="mb-4 gap-2">
+    <ng-template pTemplate="left">
+      <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="createProduct()"></button>
     </ng-template>
 
     <ng-template #end>
